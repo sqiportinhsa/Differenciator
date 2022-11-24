@@ -12,14 +12,14 @@
             return returning;                                                                 \
         }
 
-bool init_formula(Formula *formula, char *text_or) {
+bool init_formula(Expression *expr, char *text_or) {
     
-    assert(formula != nullptr);
+    assert(expr != nullptr);
 
-    formula->text_origin = text_or;
+    expr->text_origin = text_or;
 
-    init_tree(formula->origin);
-    init_tree(formula->diffirenciated);
+    init_tree(&expr->origin);
+    init_tree(&expr->diffirenciated);
 }
 
 bool parse_oper(Tree_node *node, char *text_origin) {
