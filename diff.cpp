@@ -4,6 +4,7 @@
 
 #include "diff.h"
 #include "Libs/file_reading.hpp"
+#include "Tree/tree.h"
 
 #define memory_allocate(ptr, size, type, returning)                                           \
         ptr = (type*) calloc(size, sizeof(type));                                             \
@@ -22,7 +23,7 @@ bool init_formula(Expression *expr, char *text_or) {
     init_tree(&expr->diffirenciated);
 }
 
-bool parse_oper(Tree_node *node, char *text_origin) {
+bool parse_oper(Tree *tree, Tree_node *node, char *text_origin) {
     size_t ip = 0;
 
     int bracket_balance = 0;
@@ -44,6 +45,7 @@ bool parse_oper(Tree_node *node, char *text_origin) {
     if (isdigit(text_origin[ip])) {
         node->type = VAL;
         sscanf(&(text_origin[ip]), "%d", node->data.val);
+        return true;
     }
 
     if (text_origin[ip] != '(') {
@@ -71,28 +73,39 @@ bool parse_oper(Tree_node *node, char *text_origin) {
     if (!get_oper(&text_origin[ip], &node->data.op)) {
         return false;
     }
+
+    create_left_node  (tree, node);
+    create_right_node (tree, node);
+    
+    if (!parse_oper(tree, node->left,  text_origin + 1) ||
+        !parse_oper(tree, node->right, text_origin + ip + 1)) {
+
+            return false;
+        }
+
+    return true;
 }
 
 bool get_oper(char *source, Operations *dest) {
     switch (*source) {
         case '+':
-            *dest = ;
+            *dest = ADD;
             return true;
 
         case '-':
-            *dest = ;
+            *dest = SUB;
             return true;
                     
         case '*':
-            *dest = ;
+            *dest = MUL;
             return true;
             
         case '/':
-            *dest = ;
+            *dest = DIV;
             return true;
             
         case '^':
-            *dest = ;
+            *dest = DEG;
             return true;
         
         default:

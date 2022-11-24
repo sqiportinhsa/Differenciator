@@ -87,10 +87,11 @@ enum Operations {
 
 int real_tree_init(Tree* tree, const char *file, const char *func, int line);
 
-Tree_node* init_right_node(Tree *tree, Tree_node *parent, char *data);
-Tree_node* init_left_node (Tree *tree, Tree_node *parent, char *data);
- 
-int init_head_node(Tree *tree, char *data);
+Tree_node* create_right_node(Tree *tree, Tree_node *parent);
+
+Tree_node* create_left_node (Tree *tree, Tree_node *parent);
+
+Tree_node* create_haed_node(Tree *tree, Node_type type, void *data);
 
 void free_node(Tree_node *node);
 

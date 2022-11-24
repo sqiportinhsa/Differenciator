@@ -9,7 +9,7 @@
 
 static void generate_node_code(Tree_node *node, FILE *code_output);
 
-static Tree_node* init_node(Tree *tree, Tree_node *parent, bool is_left, Node_type type, void* data);
+static Tree_node* create_node(Tree *tree, Tree_node *parent, bool is_left);
 
 static void text_dump_node(Tree_node *node, FILE *output);
 
@@ -36,7 +36,7 @@ int real_tree_init(Tree* tree, const char *file, const char *func, int line) {
     return NO_TREE_ERR;
 }
 
-static Tree_node* init_node(Tree *tree, Tree_node *parent, bool is_left, Node_type type, void* data) {
+static Tree_node* create_node(Tree *tree, Tree_node *parent, bool is_left) {
 
     Tree_node *node = nullptr;
 
@@ -44,25 +44,6 @@ static Tree_node* init_node(Tree *tree, Tree_node *parent, bool is_left, Node_ty
 
     node->left  = nullptr;
     node->right = nullptr;
- 
-    node->type  = type;
-
-    switch (type) {
-        case VAL:
-            node->data.op  = (Operations) data;
-            break;
-
-        case VAR:
-            node->data.val = (double)     data;
-            break;
-
-        case OP:
-            node->data.var = (char*)      data;
-            break;
-
-        default:
-            break;
-    }
 
     node->parent = parent;
 
@@ -82,16 +63,16 @@ static Tree_node* init_node(Tree *tree, Tree_node *parent, bool is_left, Node_ty
     return node;
 }
 
-Tree_node* init_right_node(Tree *tree, Tree_node *parent, Node_type type, void *data) {
-    return init_node(tree, parent, false, type, data);
+Tree_node* create_right_node(Tree *tree, Tree_node *parent) {
+    return create_node(tree, parent, false);
 }
 
-Tree_node* init_left_node (Tree *tree, Tree_node *parent, Node_type type, void *data) {
-    return init_node(tree, parent, true, type, data);
+Tree_node* create_left_node (Tree *tree, Tree_node *parent) {
+    return create_node(tree, parent, true);
 }
 
-Tree_node* init_haed_node(Tree *tree, Node_type type, void *data) {
-    return init_node(tree, nullptr, false, type, data);
+Tree_node* create_haed_node(Tree *tree, Node_type type, void *data) {
+    return create_node(tree, nullptr, false);
 }
 
 void tree_dtor(Tree *tree) {
@@ -114,7 +95,7 @@ void free_node(Tree_node *node) {
     }
 
     if (!node->is_saved) {
-        free(node->data);
+        free(node->data.var);
     }
 
     free_node(node->left);
@@ -229,13 +210,13 @@ static void text_dump_node(Tree_node *node, FILE *output) {
 static void generate_node_code(Tree_node *node, FILE *code_output) {
 
     switch (node->type) {
-        case val:
+        case VAL:
             Print_val_node(node);
             break;
-        case var:
+        case VAR:
             Print_var_node(node);
             break;        
-        case op:
+        case OP:
             Print_op__node(node);
             break;
         default:
