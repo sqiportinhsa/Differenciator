@@ -58,7 +58,7 @@ static bool get_mul_and_div(const char **pointer, Tree_node *dest);
             return false;
 
 
-int descent(const char *pointer, Tree_node *dest) {
+bool descent(const char *pointer, Tree_node *dest) {
 
     assert(pointer != nullptr);
 
