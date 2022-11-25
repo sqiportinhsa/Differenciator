@@ -38,7 +38,7 @@ bool parse_oper(Tree *tree, Tree_node *node, char *text_origin) {
 
     if (isalpha(text_origin[ip])) {
         node->type = VAR;
-        node->data.var = &(text_origin[ip]);
+        node->data.var = text_origin[ip];
         return true;
     }
 
