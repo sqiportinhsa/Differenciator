@@ -21,10 +21,9 @@ struct Tree_node {
     union Data {
         double     val;
         Operations  op;
-        char*      var;
+        char      var;
     } data;
 
-    bool is_saved = true;
 };
 
 struct Tree {
@@ -55,6 +54,7 @@ enum Operations {
     CTG,
     LOG,
     DEG,
+    EXP,
 };
 
 
@@ -87,11 +87,11 @@ enum Operations {
 
 int real_tree_init(Tree* tree, const char *file, const char *func, int line);
 
-Tree_node* create_right_node(Tree *tree, Tree_node *parent);
+Tree_node* create_right_node(Tree_node *parent);
 
-Tree_node* create_left_node (Tree *tree, Tree_node *parent);
+Tree_node* create_left_node (Tree_node *parent);
 
-Tree_node* create_haed_node(Tree *tree, Node_type type, void *data);
+Tree_node* create_head_node();
 
 void free_node(Tree_node *node);
 

@@ -9,7 +9,7 @@
 
 static void generate_node_code(Tree_node *node, FILE *code_output);
 
-static Tree_node* create_node(Tree *tree, Tree_node *parent, bool is_left);
+static Tree_node* create_node(Tree_node *parent, bool is_left);
 
 static void text_dump_node(Tree_node *node, FILE *output);
 
@@ -19,11 +19,12 @@ static const int max_generation_png_command_len = 200;
 static const int max_png_file_name_len = 30;
 
 
+//----------------------------- INITIALISATION SECTION -------------------------------------------//
+
 #define memory_allocate(ptr, size, type, returning)                                           \
         ptr = (type*) calloc(size, sizeof(type));                                             \
         if (ptr == nullptr) {                                                                 \
-            dump_tree(tree, "can't allocate memory: not enought free mem\n");                 \
-            tree_dtor(tree);                                                                  \
+            printf("can't allocate memory: not enought free mem\n");                          \
             return returning;                                                                 \
         }
 
@@ -36,7 +37,7 @@ int real_tree_init(Tree* tree, const char *file, const char *func, int line) {
     return NO_TREE_ERR;
 }
 
-static Tree_node* create_node(Tree *tree, Tree_node *parent, bool is_left) {
+static Tree_node* create_node(Tree_node *parent, bool is_left) {
 
     Tree_node *node = nullptr;
 
@@ -49,7 +50,7 @@ static Tree_node* create_node(Tree *tree, Tree_node *parent, bool is_left) {
 
     if (parent == nullptr) {
 
-        tree->head = node;
+        return node;
 
     } else if (is_left) {
 
@@ -63,27 +64,31 @@ static Tree_node* create_node(Tree *tree, Tree_node *parent, bool is_left) {
     return node;
 }
 
-Tree_node* create_right_node(Tree *tree, Tree_node *parent) {
-    return create_node(tree, parent, false);
+Tree_node* create_right_node(Tree_node *parent) {
+    return create_node(parent, false);
 }
 
-Tree_node* create_left_node (Tree *tree, Tree_node *parent) {
-    return create_node(tree, parent, true);
+Tree_node* create_left_node (Tree_node *parent) {
+    return create_node(parent, true);
 }
 
-Tree_node* create_haed_node(Tree *tree, Node_type type, void *data) {
-    return create_node(tree, nullptr, false);
+Tree_node* create_head_node() {
+    return create_node(nullptr, false);
 }
+
+//--------------------------------- DESTRUCTION SECTION ------------------------------------------//
+
+#define FREE_EXISTED(node)       \
+        if (node != nullptr) {   \
+            free_node(node);     \
+        }
 
 void tree_dtor(Tree *tree) {
     assert(tree != nullptr);
 
     free(tree->logs);
     
-    free_node(tree->head->left);
-    free_node(tree->head->right);
-
-    free(tree->head);
+    free_node(tree->head);
 
     tree->head = nullptr;
     tree->logs = nullptr;
@@ -94,15 +99,15 @@ void free_node(Tree_node *node) {
         return;
     }
 
-    if (!node->is_saved) {
-        free(node->data.var);
-    }
-
-    free_node(node->left);
-    free_node(node->right);
+    FREE_EXISTED(node->left);
+    FREE_EXISTED(node->right);
 
     free(node);
 }
+
+#undef FREE_EXISTED
+
+//-------------------------------------- DUMP SECTION --------------------------------------------//
 
 void real_dump_tree(const Tree *tree, const char *file, const char *func, int line, 
                                                                const char *message, ...) {
