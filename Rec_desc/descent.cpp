@@ -36,7 +36,17 @@ static bool get_add_sub(const char **pointer, Tree_node *dest);
 
 static bool get_mul_and_div(const char **pointer, Tree_node *dest);
 
-
+// GRAMMAR
+//
+//  Descent           ::= Get_add_sub, '\0';
+//  Get_add_sub       ::= Get_mul_and_div {[+, -]}*
+//  Get_mul_and_div   ::= Get_transc {[*, /]}*
+//  Get_transc        ::= [sin/cos/...] '(' Get_from_brackets ')' | Get_from_brackets
+//  Get_from_brackets ::= '(' Get_add_sub ')' | Get_argument
+//  Get_argument      ::= Get_value | Get_variable
+//  Get_value         ::= ['0' - '9']+
+//  Get_variable      ::= ['a' - 'z', 'A' - 'Z']
+//
 
 
 
@@ -77,8 +87,8 @@ bool descent(const char *pointer, Tree_node *dest) {
 
 
 #define TRY_TO_GET_WITH(success)   \
-        if (success) {           \
-            return true;         \
+        if (success) {             \
+            return true;           \
         }
 
 
@@ -210,7 +220,7 @@ static bool get_transc(const char **pointer, Tree_node *dest) {
     
     create_left_node(dest);
     
-    RETURN_FALSE_IF(!get_add_sub(pointer, dest));
+    RETURN_FALSE_IF(!get_from_brackets(pointer, dest));
 
     RETURN_FALSE_IF(**pointer != ')');
 
