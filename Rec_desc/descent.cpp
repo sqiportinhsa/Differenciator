@@ -57,6 +57,7 @@ static bool get_mul_and_div(const char **pointer, Tree_node *dest);
         if (statement)             \
             return false;
 
+
 int descent(const char *pointer, Tree_node *dest) {
 
     assert(pointer != nullptr);
@@ -88,6 +89,8 @@ static bool get_argument(const char **pointer, Tree_node *dest) {
     TRY_TO_GET_WITH(get_value   (pointer, dest));
     TRY_TO_GET_WITH(get_variable(pointer, dest));
 
+    WARNING(true, "invalid syntax. Value or variable expected, got <%c>", *pointer);
+
     return false;
 }
 
@@ -95,7 +98,7 @@ static bool get_value(const char **pointer, Tree_node *dest) {
 
     assert( pointer != nullptr);
     assert(*pointer != nullptr);
-    assert(dest != nullptr);
+    assert( dest    != nullptr);
 
     int val = 0;
 
@@ -262,7 +265,7 @@ static bool get_mul_and_div(const char **pointer, Tree_node *dest) {
     assert(*pointer != nullptr);
     assert( dest    != nullptr);
 
-    RETURN_FALSE_IF(!get_from_brackets(pointer, dest));
+    RETURN_FALSE_IF(!get_transc(pointer, dest));
 
     while (**pointer == '*' || **pointer == '/') {
 
@@ -288,12 +291,14 @@ static bool get_mul_and_div(const char **pointer, Tree_node *dest) {
 
         ++(*pointer);
 
-        RETURN_FALSE_IF(!get_from_brackets(pointer, dest)); //get second argument
+        RETURN_FALSE_IF(!get_transc(pointer, dest)); //get second argument
 
     }
 
     return true;
 }
+
+#undef CHECK_IF_FUNC_IS
 
 #undef WARNING
 #undef RETURN_FALSE_IF
