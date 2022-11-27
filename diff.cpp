@@ -71,7 +71,9 @@ bool init_formula(Expression *expr, char *text_or) {
 #define Log(l) create_node(OP, LOG, l)
 
 
-void make_diff_tree(Expression *expr) {
+void diff_tree(Tree *source, Tree *dest) {
+
+    source->head = diff_node(dest->head);
 
 
 }
@@ -111,6 +113,12 @@ Tree_node* copy_subtree(Tree_node *source) {
 
     assert(source != nullptr);
 
-    
+    Tree_node *copy = create_empty_node();
+
+    copy->data = source->data;
+    copy->type = source->type;
+
+    copy->left  = copy_subtree(source->left);
+    copy->right = copy_subtree(source->right);
 
 }
