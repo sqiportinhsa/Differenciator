@@ -218,7 +218,7 @@ static bool get_transc(const char **pointer, Tree_node *dest) {
 
     ++(*pointer);
     
-    create_left_node(dest);
+    dest->left = create_empty_node(dest);
     
     RETURN_FALSE_IF(!get_from_brackets(pointer, dest));
 
@@ -240,15 +240,15 @@ static bool get_add_sub(const char **pointer, Tree_node *dest) {
 
     while (**pointer == '+' || **pointer == '-') {
 
-        Tree_node temp = *dest; //save info from dest node
+        Tree_node temp = *dest;                          //save info from dest node
 
-        create_left_node(dest);
+        dest->left = create_empty_node(dest);
 
-        *(dest->left) = temp;   //move saved info to left
-
-        dest->type = OP;        //make dest the operation node
-
-        if (**pointer == '+') { //get type of operation
+        *(dest->left) = temp;                            //move saved info to left
+                        
+        dest->type = OP;                                 //make dest the operation node
+                        
+        if (**pointer == '+') {                          //get type of operation
 
             dest->data.op = ADD;
 
@@ -258,11 +258,13 @@ static bool get_add_sub(const char **pointer, Tree_node *dest) {
 
         }
 
-        dest = create_right_node(dest); //create node for second operation argument
+        dest->right = create_empty_node(dest);           //create node for second operation argument
+           
+        dest = dest->right;                              //start work with second argument node
 
         ++(*pointer);
 
-        RETURN_FALSE_IF(!get_mul_and_div(pointer, dest)); //get second argument
+        RETURN_FALSE_IF(!get_mul_and_div(pointer, dest));//get second argument
 
     }
 
@@ -279,15 +281,15 @@ static bool get_mul_and_div(const char **pointer, Tree_node *dest) {
 
     while (**pointer == '*' || **pointer == '/') {
 
-        Tree_node temp = *dest; //save info from dest node
+        Tree_node temp = *dest;                          //save info from dest node
 
-        create_left_node(dest);
+        dest->left = create_empty_node(dest);
 
-        *(dest->left) = temp;   //move saved info to left
-
-        dest->type = OP;        //make dest the operation node
-
-        if (**pointer == '*') { //get type of operation
+        *(dest->left) = temp;                            //move saved info to left
+                         
+        dest->type = OP;                                 //make dest the operation node
+                         
+        if (**pointer == '*') {                          //get type of operation
 
             dest->data.op = MUL;
 
@@ -297,11 +299,13 @@ static bool get_mul_and_div(const char **pointer, Tree_node *dest) {
 
         }
 
-        dest = create_right_node(dest); //create node for second operation argument
+        dest->right = create_empty_node(dest);           //create node for second operation argument
+
+        dest = dest->right;                              //start work with second node
 
         ++(*pointer);
 
-        RETURN_FALSE_IF(!get_transc(pointer, dest)); //get second argument
+        RETURN_FALSE_IF(!get_transc(pointer, dest));     //get second argument
 
     }
 
