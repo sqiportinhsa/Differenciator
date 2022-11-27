@@ -9,8 +9,6 @@
 
 static void generate_node_code(Tree_node *node, FILE *code_output);
 
-static Tree_node* create_node(Tree_node *parent, bool is_left, 
-                              Tree_node *left = nullptr, Tree_node *right = nullptr);
 
 static void text_dump_node(Tree_node *node, FILE *output);
 
@@ -40,7 +38,7 @@ int real_tree_init(Tree* tree, const char *file, const char *func, int line) {
 
 //------------------- CREATION ----------------//
 
-static Tree_node* create_node(Tree_node *parent, bool is_left, Tree_node *left, Tree_node *right) {
+Tree_node* create_empty_node(Tree_node *parent, Tree_node *left, Tree_node *right) {
 
     Tree_node *node = nullptr;
 
@@ -51,39 +49,19 @@ static Tree_node* create_node(Tree_node *parent, bool is_left, Tree_node *left, 
 
     node->parent = parent;
 
-    if (parent == nullptr) {
-
-        return node;
-
-    } else if (is_left) {
-
-        parent->left  = node;
-
-    } else {
-
-        parent->right = node;
-    } 
-
     return node;
 }
 
-Tree_node* create_right_node(Tree_node *parent, Tree_node *left, Tree_node *right) {
-    return create_node(parent, false, left, right);
-}
-
-Tree_node* create_left_node (Tree_node *parent, Tree_node *left, Tree_node *right) {
-    return create_node(parent, true,  left, right);
-}
-
-Tree_node* create_head_node(Tree_node *left, Tree_node *right) {
-    return create_node(nullptr, false, left, right);
+Tree_node* create_orphan_node(Tree_node *left, Tree_node *right) {
+    return create_empty_node(nullptr, left, right);
 }
 
 //------------- FILLING WITH DATA -------------//
 
-Tree_node* fill_node(Node_type type, char var, Tree_node *left, Tree_node *right) {
+Tree_node* create_node(Node_type type, char var, 
+                      Tree_node *left, Tree_node *right) {
 
-    Tree_node *node = create_node(parent, is_left, left, right);
+    Tree_node *node = create_empty_node(left, right);
 
     node->type = type;
 
@@ -92,9 +70,10 @@ Tree_node* fill_node(Node_type type, char var, Tree_node *left, Tree_node *right
     return node;
 }
 
-Tree_node* fill_node(Node_type type, int val, Tree_node *left, Tree_node *right) {
+Tree_node* create_node(Node_type type, int val, 
+                       Tree_node *left, Tree_node *right) {
 
-    Tree_node *node = create_node(parent, is_left, left, right);
+    Tree_node *node = create_empty_node(left, right);
 
     node->type = type;
 
@@ -103,15 +82,31 @@ Tree_node* fill_node(Node_type type, int val, Tree_node *left, Tree_node *right)
     return node;
 }
 
-Tree_node* fill_node(Node_type type, Operations op, Tree_node *left, Tree_node *right) {
+Tree_node* create_node(Node_type type, Operations op, 
+                       Tree_node *left, Tree_node *right) {
 
-    Tree_node *node = create_node(parent, is_left, left, right);
+    Tree_node *node = create_empty_node(left, right);
 
     node->type = type;
 
     node->data.op = op;
 
     return node;
+}
+
+void set_parents(Tree_node *node, Tree_node *parent) {
+
+    node->parent = parent;
+
+    if (node->left) {
+
+        set_parents(node->left,  node);
+    }
+
+    if (node->right) {
+
+        set_parents(node->right, node);
+    }
 }
 
 
@@ -147,6 +142,27 @@ void free_node(Tree_node *node) {
 #undef FREE_EXISTED
 
 //-------------------------------------- DUMP SECTION --------------------------------------------//
+
+#define Print_code(format, ...)                    \
+        fprintf(code_output, format, ##__VA_ARGS__);
+
+#define Print_val_node(node)                                                                       \
+        Print_code("node%p [label=\"{type: %s | val: %f}\",fillcolor=\"%s\",color=\"%s\"];\n",     \
+                                     node, Data_is_val, node->data.val, FILL__COLOR, FRAME_COLOR);
+
+#define Print_var_node(node)                                                                       \
+        Print_code("node%p [label=\"{type: %s | var: %s}\",fillcolor=\"%s\",color=\"%s\"];\n",     \
+                                     node, Data_is_var, node->data.var, FILL__COLOR, FRAME_COLOR);
+
+#define Print_op__node(node)                                                                       \
+        Print_code("node%p [label=\"{type: %s | op:  %d}\",fillcolor=\"%s\",color=\"%s\"];\n",     \
+                                     node, Data_is_op,  node->data.op,  FILL__COLOR, FRAME_COLOR);
+
+
+#define Print_arrow(node)                                                              \
+        Print_code("node%p->node%p [color=\"%s\"];\n", node->parent, node, ARROW_COLOR);
+
+
 
 void real_dump_tree(const Tree *tree, const char *file, const char *func, int line, 
                                                                const char *message, ...) {
