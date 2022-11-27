@@ -9,7 +9,8 @@
 
 static void generate_node_code(Tree_node *node, FILE *code_output);
 
-static Tree_node* create_node(Tree_node *parent, bool is_left);
+static Tree_node* create_node(Tree_node *parent, bool is_left, 
+                              Tree_node *left = nullptr, Tree_node *right = nullptr);
 
 static void text_dump_node(Tree_node *node, FILE *output);
 
@@ -37,14 +38,16 @@ int real_tree_init(Tree* tree, const char *file, const char *func, int line) {
     return NO_TREE_ERR;
 }
 
-static Tree_node* create_node(Tree_node *parent, bool is_left) {
+//------------------- CREATION ----------------//
+
+static Tree_node* create_node(Tree_node *parent, bool is_left, Tree_node *left, Tree_node *right) {
 
     Tree_node *node = nullptr;
 
     memory_allocate(node, 1, Tree_node, nullptr);
 
-    node->left  = nullptr;
-    node->right = nullptr;
+    node->left  = left;
+    node->right = right;
 
     node->parent = parent;
 
@@ -64,17 +67,53 @@ static Tree_node* create_node(Tree_node *parent, bool is_left) {
     return node;
 }
 
-Tree_node* create_right_node(Tree_node *parent) {
-    return create_node(parent, false);
+Tree_node* create_right_node(Tree_node *parent, Tree_node *left, Tree_node *right) {
+    return create_node(parent, false, left, right);
 }
 
-Tree_node* create_left_node (Tree_node *parent) {
-    return create_node(parent, true);
+Tree_node* create_left_node (Tree_node *parent, Tree_node *left, Tree_node *right) {
+    return create_node(parent, true,  left, right);
 }
 
-Tree_node* create_head_node() {
-    return create_node(nullptr, false);
+Tree_node* create_head_node(Tree_node *left, Tree_node *right) {
+    return create_node(nullptr, false, left, right);
 }
+
+//------------- FILLING WITH DATA -------------//
+
+Tree_node* fill_node(Node_type type, char var, Tree_node *left, Tree_node *right) {
+
+    Tree_node *node = create_node(parent, is_left, left, right);
+
+    node->type = type;
+
+    node->data.var = var;
+
+    return node;
+}
+
+Tree_node* fill_node(Node_type type, int val, Tree_node *left, Tree_node *right) {
+
+    Tree_node *node = create_node(parent, is_left, left, right);
+
+    node->type = type;
+
+    node->data.val = val;
+
+    return node;
+}
+
+Tree_node* fill_node(Node_type type, Operations op, Tree_node *left, Tree_node *right) {
+
+    Tree_node *node = create_node(parent, is_left, left, right);
+
+    node->type = type;
+
+    node->data.op = op;
+
+    return node;
+}
+
 
 //--------------------------------- DESTRUCTION SECTION ------------------------------------------//
 

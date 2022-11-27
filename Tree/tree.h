@@ -87,14 +87,24 @@ enum Operations {
 
 int real_tree_init(Tree* tree, const char *file, const char *func, int line);
 
-Tree_node* create_right_node(Tree_node *parent);
+Tree_node* create_right_node(Tree_node *parent, Tree_node *left = nullptr, Tree_node *right = nullptr);
 
-Tree_node* create_left_node (Tree_node *parent);
+Tree_node* create_left_node (Tree_node *parent, Tree_node *left = nullptr, Tree_node *right = nullptr);
 
-Tree_node* create_head_node();
+Tree_node* create_head_node(Tree_node *left = nullptr, Tree_node *right = nullptr);
+
+
+Tree_node* fill_node(Node_type type, char var, 
+                                            Tree_node *left = nullptr, Tree_node *right = nullptr);
+
+Tree_node* fill_node(Node_type type, int val, 
+                                            Tree_node *left = nullptr, Tree_node *right = nullptr);
+
+Tree_node* fill_node(Node_type type, Operations op, 
+                                            Tree_node *left = nullptr, Tree_node *right = nullptr);
+
 
 void free_node(Tree_node *node);
-
 
 void tree_dtor(Tree *tree);
 
