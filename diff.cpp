@@ -23,14 +23,14 @@ bool init_formula(Expression *expr, char *text_or) {
     init_tree(&expr->origin);
     init_tree(&expr->diffirenciated);
 
-    expr->origin.head = create_head_node();
+    expr->origin.head = create_orphan_node();
 
     if (!descent(expr->text_origin, expr->origin.head)) {
 
         return false;
     }
 
-    retun true;
+    return true;
 }
 
 //------------------------------------------------------------------------------------------------//
@@ -39,30 +39,37 @@ bool init_formula(Expression *expr, char *text_or) {
 //                                                                                                //
 //------------------------------------------------------------------------------------------------//
 
+#define CS copy_subtree(source)
+
 #define DL diff_node(source->left)
 #define DR diff_node(source->right)
-#define CR copy_tree(source->left)
-#define CL copy_left(source->right)
+#define CR copy_subtree(source->left)
+#define CL copy_subtree(source->right)
 
-#define diff_const fill_node(VAL, 0)
+#define Diff_const create_node(VAL, 0)
 
-#define deff_var fill_node(VAL, 1)
+#define Diff_var create_node(VAL, 1)
 
-#define Add(l, r) fill_node(op, ADD, l, r)
-#define Sub(l, r) fill_node(op, SUB, l, r)
-#define Mul(l, r) fill_node(op, MUL, l, r)
-#define Div(l, r) fill_node(op, DIV, l, r)
+#define Const(c) create_node(VAL, c)
 
-#define Square(l) fill_node(op, MUL, l, l);
+#define Add(l, r) create_node(OP, ADD, l, r)
+#define Sub(l, r) create_node(OP, SUB, l, r)
+#define Mul(l, r) create_node(OP, MUL, l, r)
+#define Div(l, r) create_node(OP, DIV, l, r)
 
-#define Cos(l) fill_node(op, COS, l)
-#define Sin(l) fill_node(op, SIN, l)
-#define Tan(l) fill_node(op, TAN, l)
-#define Ctg(l) fill_node(op, CTG, l)
+#define Deg(l, r) create_node(OP, DEG, l, r)
 
-#define Exp(l) fill_node(op, EXP, l)
+#define Square(l) create_node(OP, MUL, l, l)
 
-#define Deg(l, r) fill_node(op, DEG, l, r)
+#define Cos(l) create_node(OP, COS, l)
+#define Sin(l) create_node(OP, SIN, l)
+#define Tan(l) create_node(OP, TAN, l)
+#define Ctg(l) create_node(OP, CTG, l)
+
+#define Exp(l) create_node(OP, EXP, l)
+
+#define Log(l) create_node(OP, LOG, l)
+
 
 void make_diff_tree(Expression *expr) {
 
@@ -71,17 +78,19 @@ void make_diff_tree(Expression *expr) {
 
 Tree_node* diff_node(Tree_node *source) {
 
+    assert(source != nullptr);
+
     if (source->type == VAL) {
 
-        return fill_node(VAL, 0);
+        return Diff_const;
     }
 
     if (source->type == VAR) {
 
-        return fill_node(VAL, 1);
+        return Diff_var;
     }
 
-    dest->type = OP;
+    Tree_node *dest = create_empty_node();
 
     switch (source->data.op) {
         case ADD: return Add(DL, DR);
@@ -89,11 +98,19 @@ Tree_node* diff_node(Tree_node *source) {
         case MUL: return Add(Mul(DL, CR), Mul(CL, DR));
         case DIV: return Sub(Div(DL, CR), Div(Mul(CL, DR), Mul(CR, CR)));
         case SIN: return Mul(Cos(CL), DL);
-        case COS: return Mul(Mul(Sin(CL), -1), DL);
-        case TAN: return Mul(Div(1, Square(Cos(CL))), DL);
-        case CTG: return Mul(Div(1, Square(Sin(CL))), Mul(DL, -1));
+        case COS: return Mul(Mul(Sin(CL), Const(-1)), DL);
+        case TAN: return Mul(Div(Const(1), Square(Cos(CL))), DL);
+        case CTG: return Mul(Div(Const(1), Square(Sin(CL))), Mul(DL, Const(-1)));
         case EXP: return Mul(Exp(CL), DL);
         case LOG: return Div(DL, CL);
-        case DEG: return Exp()
+        case DEG: return Mul(CS, Add(Div(Mul(CR, DL), CL), Mul(DR, Log(CL))));
     }
+}
+
+Tree_node* copy_subtree(Tree_node *source) {
+
+    assert(source != nullptr);
+
+    
+
 }
