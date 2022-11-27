@@ -84,6 +84,8 @@ Tree_node* create_node(Node_type type, Operations op,
                      Tree_node *right  = nullptr);
 
 
+void set_as_parent(Tree_node *node);
+
 
 void free_node(Tree_node *node);
 

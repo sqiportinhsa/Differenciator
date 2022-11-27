@@ -94,18 +94,16 @@ Tree_node* create_node(Node_type type, Operations op,
     return node;
 }
 
-void set_parents(Tree_node *node, Tree_node *parent) {
-
-    node->parent = parent;
+void set_as_parent(Tree_node *node) {
 
     if (node->left) {
 
-        set_parents(node->left,  node);
+        node->left->parent  = node;
     }
 
     if (node->right) {
 
-        set_parents(node->right, node);
+        node->right->parent = node;
     }
 }
 
