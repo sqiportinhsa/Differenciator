@@ -10,6 +10,8 @@
 
 static char* get_input(const char *filename);
 
+const int barrier_size = 3;
+
 
 #define memory_allocate(ptr, size, type, returning)                                           \
         ptr = (type*) calloc(size, sizeof(type));                                             \
@@ -71,9 +73,15 @@ static char* get_input(const char *filename) {
 
     char *input = nullptr;
 
-    memory_allocate(input, len, char, nullptr);
+    memory_allocate(input, len + barrier_size, char, nullptr);
 
     read_file(input, len, filename);
+
+    //set barrier
+
+    input[len + 0] = '\0';
+    input[len + 1] = '\0';
+    input[len + 2] = '\0';    
 
     return input;
 }
