@@ -246,9 +246,9 @@ static bool get_add_sub(const char **pointer, Tree_node *dest) {
 
     RETURN_FALSE_IF(!get_mul_and_div(pointer, dest));
 
-    printf("cont get add anf sub\n");
+    printf("start get add anf sub\n");
 
-    printf("node data: %d\n", dest->data.val);
+    printf("got: %d\n", dest->data.val);
 
     while (**pointer == '+' || **pointer == '-') {
 
