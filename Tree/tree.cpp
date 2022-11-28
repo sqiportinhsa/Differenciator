@@ -149,7 +149,7 @@ void free_node(Tree_node *node) {
                                      node, Data_is_val, node->data.val, FILL__COLOR, FRAME_COLOR);
 
 #define Print_var_node(node)                                                                       \
-        Print_code("node%p [label=\"{type: %s | var: %s}\",fillcolor=\"%s\",color=\"%s\"];\n",     \
+        Print_code("node%p [label=\"{type: %s | var: %c}\",fillcolor=\"%s\",color=\"%s\"];\n",     \
                                      node, Data_is_var, node->data.var, FILL__COLOR, FRAME_COLOR);
 
 #define Print_op__node(node)                                                                       \

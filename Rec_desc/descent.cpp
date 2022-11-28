@@ -41,7 +41,7 @@ static bool get_mul_and_div(const char **pointer, Tree_node *dest);
 //  Descent           ::= Get_add_sub, '\0';
 //  Get_add_sub       ::= Get_mul_and_div {[+, -]}*
 //  Get_mul_and_div   ::= Get_transc {[*, /]}*
-//  Get_transc        ::= [sin/cos/...] '(' Get_from_brackets ')' | Get_from_brackets
+//  Get_transc        ::= Get_from_brackets | [sin/cos/...] '(' Get_from_brackets ')'
 //  Get_from_brackets ::= '(' Get_add_sub ')' | Get_argument
 //  Get_argument      ::= Get_value | Get_variable
 //  Get_value         ::= ['0' - '9']+
@@ -71,6 +71,8 @@ static bool get_mul_and_div(const char **pointer, Tree_node *dest);
 bool descent(const char *pointer, Tree_node *dest) {
 
     assert(pointer != nullptr);
+
+    printf("start\n");
 
     RETURN_FALSE_IF(!get_add_sub(&pointer, dest));
 
@@ -121,7 +123,9 @@ static bool get_value(const char **pointer, Tree_node *dest) {
         ++(*pointer);
     }
 
-    if (pointer_before != *pointer) {
+    printf("got %d\n", val);
+
+    if (pointer_before == *pointer) {
         return false;
     }
 
@@ -144,6 +148,8 @@ static bool get_variable(const char **pointer, Tree_node *dest) {
         dest->data.var = **pointer;
 
         ++(*pointer);
+
+        printf("got %c\n", dest->data.var);
         
         return true;
     }
@@ -203,6 +209,10 @@ static bool get_transc(const char **pointer, Tree_node *dest) {
 
     sscanf(*pointer, "%c%c%c", func[0], func[1], func[2]);
 
+    if (get_from_brackets(pointer, dest)) {
+        return true;
+    }
+
     bool func_parsed = false;
 
     CHECK_IF_FUNC_IS("sin", SIN);
@@ -238,13 +248,19 @@ static bool get_add_sub(const char **pointer, Tree_node *dest) {
 
     RETURN_FALSE_IF(!get_mul_and_div(pointer, dest));
 
+    printf("cont get add anf sub\n");
+
     while (**pointer == '+' || **pointer == '-') {
 
         Tree_node temp = *dest;                          //save info from dest node
 
+        printf("add before manipulations: %d\n", dest->data.val);
+
         dest->left = create_empty_node(dest);
 
         *(dest->left) = temp;                            //move saved info to left
+
+        printf("add after moving to left: %d\n", dest->data.val);
                         
         dest->type = OP;                                 //make dest the operation node
                         
@@ -262,6 +278,8 @@ static bool get_add_sub(const char **pointer, Tree_node *dest) {
            
         dest = dest->right;                              //start work with second argument node
 
+        printf("got %c\n", **pointer);
+
         ++(*pointer);
 
         RETURN_FALSE_IF(!get_mul_and_div(pointer, dest));//get second argument
@@ -278,6 +296,8 @@ static bool get_mul_and_div(const char **pointer, Tree_node *dest) {
     assert( dest    != nullptr);
 
     RETURN_FALSE_IF(!get_transc(pointer, dest));
+
+    printf("cont get mul and div\n");
 
     while (**pointer == '*' || **pointer == '/') {
 
@@ -302,6 +322,8 @@ static bool get_mul_and_div(const char **pointer, Tree_node *dest) {
         dest->right = create_empty_node(dest);           //create node for second operation argument
 
         dest = dest->right;                              //start work with second node
+
+        printf("got %c\n", **pointer);
 
         ++(*pointer);
 

@@ -46,9 +46,9 @@ struct Tree_node {
     Tree_node* parent   = nullptr;
 
     union Data {
-        double     val;
+        int        val;
         Operations  op;
-        char      var;
+        char       var;
     } data;
 
 };
