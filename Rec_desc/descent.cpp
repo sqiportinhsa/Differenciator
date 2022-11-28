@@ -244,9 +244,13 @@ static bool get_add_sub(const char **pointer, Tree_node *dest) {
     assert(*pointer != nullptr);
     assert( dest    != nullptr);
 
+    printf("start get add anf sub\n");
+
+    Tree_node *prev = dest->parent;
+
     RETURN_FALSE_IF(!get_mul_and_div(pointer, dest));
 
-    printf("start get add anf sub\n");
+    dest = prev->right;
 
     printf("got: %d\n", dest->data.val);
 
@@ -297,7 +301,11 @@ static bool get_add_sub(const char **pointer, Tree_node *dest) {
 
         ++(*pointer);
 
+        prev = dest->parent;
+
         RETURN_FALSE_IF(!get_mul_and_div(pointer, dest));//get second argument
+
+        dest = prev->right;
 
         printf("opnode with data %d created. left child: %d right child: %d\n", op_node->data.val, op_node->left->data.val, op_node->right->data.val);
     }
@@ -311,9 +319,15 @@ static bool get_mul_and_div(const char **pointer, Tree_node *dest) {
     assert(*pointer != nullptr);
     assert( dest    != nullptr);
 
+    printf("start get mul and div\n");
+
+    Tree_node *prev = dest->parent;
+
     RETURN_FALSE_IF(!get_transc(pointer, dest));
 
-    printf("cont get mul and div\n");
+    dest = prev->right;
+
+    printf("got %d\n", dest->data.val);
 
     while (**pointer == '*' || **pointer == '/') {
 
@@ -338,7 +352,7 @@ static bool get_mul_and_div(const char **pointer, Tree_node *dest) {
 
         op_node->type = OP;
                          
-        if (**pointer == '*') {                          //get type of operation
+        if (**pointer == '*') {       //get type of operation
 
             op_node->data.op = MUL;
 
@@ -358,14 +372,16 @@ static bool get_mul_and_div(const char **pointer, Tree_node *dest) {
 
         op_node->right = create_empty_node(op_node);           //create node for second operation argument
 
-        dest = op_node->right;                              //start work with second node
+        dest = op_node->right;                               //start work with second node
 
         ++(*pointer);
 
         RETURN_FALSE_IF(!get_transc(pointer, dest));     //get second argument
 
-        printf("opnode with data %d created. left child: %d\n", op_node->data.val, op_node->left->data.val);        
+        printf("opnode with data %d created. left child: %d right child: %d\n", op_node->data.val, op_node->left->data.val, op_node->right->data.val);        
     }
+
+    printf("stop get mul and div\n");
 
     return true;
 }
