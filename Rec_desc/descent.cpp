@@ -252,42 +252,54 @@ static bool get_add_sub(const char **pointer, Tree_node *dest) {
 
     while (**pointer == '+' || **pointer == '-') {
 
-        Tree_node temp = *dest;                          //save info from dest node
+        printf("cont get add anf sub\n");
 
-        printf("add before manipulations: %d\n", dest->data.val);
+        Tree_node *op_node = create_empty_node(dest->parent, dest); //node for operation storing
 
-        dest->left = create_empty_node(dest);
+        if (dest->parent) {
 
-        *(dest->left) = temp;                            //move saved info to left
+            if (dest->parent->left == dest) {
 
-        dest->left->parent = dest;                       //set saved parent
+                dest->parent->left = op_node;
 
-        printf("add after moving to left: %d\n", dest->data.val);
-                        
-        dest->type = OP;                                 //make dest the operation node
-                        
+            } else {
+
+                dest->parent->right = op_node;
+
+            }
+        }
+
+        dest->parent = op_node;
+
+        op_node->type = OP;
+            
         if (**pointer == '+') {                          //get type of operation
 
-            dest->data.op = ADD;
+            op_node->data.op = ADD;
 
         } else {
 
-            dest->data.op = SUB;
+            op_node->data.op = SUB;
 
         }
 
-        dest->right = create_empty_node(dest);           //create node for second operation argument
-           
-        dest = dest->right;                              //start work with second argument node
-
         printf("got %c\n", **pointer);
+
+        if (op_node->parent) {
+
+            printf("data %d, left child %d, parent %d\n", op_node->data.op, op_node->left->data.val, op_node->parent->data.val);
+
+        }
+
+        op_node->right = create_empty_node(op_node);           //create node for second operation argument
+           
+        dest = op_node->right;                              //start work with second argument node
 
         ++(*pointer);
 
         RETURN_FALSE_IF(!get_mul_and_div(pointer, dest));//get second argument
 
-        printf("tree rigth now: work with node %d, its parent %d and brother %d\n", dest->data.val, dest->parent->data.val, dest->parent->left->data.val);
-
+        printf("opnode with data %d created. left child: %d right child: %d\n", op_node->data.val, op_node->left->data.val, op_node->right->data.val);
     }
 
     return true;
@@ -305,36 +317,54 @@ static bool get_mul_and_div(const char **pointer, Tree_node *dest) {
 
     while (**pointer == '*' || **pointer == '/') {
 
-        Tree_node temp = *dest;                          //save info from dest node
+        printf("cont get mul and div\n");
 
-        dest->left = create_empty_node(dest);
+        Tree_node *op_node = create_empty_node(dest->parent, dest); //node for operation storing
 
-        *(dest->left) = temp;                            //move saved info to left
+        if (dest->parent) {
 
-        dest->left->parent = dest;                       //set saved parent
-                         
-        dest->type = OP;                                 //make dest the operation node
+            if (dest->parent->left == dest) {
+
+                dest->parent->left = op_node;
+    
+            } else {
+            
+                dest->parent->right = op_node;
+    
+            }
+        }
+
+        dest->parent = op_node;
+
+        op_node->type = OP;
                          
         if (**pointer == '*') {                          //get type of operation
 
-            dest->data.op = MUL;
+            op_node->data.op = MUL;
 
         } else {
 
-            dest->data.op = DIV;
+            op_node->data.op = DIV;
 
         }
 
-        dest->right = create_empty_node(dest);           //create node for second operation argument
-
-        dest = dest->right;                              //start work with second node
-
         printf("got %c\n", **pointer);
+
+        if (op_node->parent) {
+
+            printf("data %d, left child %d, parent %d\n", op_node->data.op, op_node->left->data.val, op_node->parent->data.val);
+
+        }
+
+        op_node->right = create_empty_node(op_node);           //create node for second operation argument
+
+        dest = op_node->right;                              //start work with second node
 
         ++(*pointer);
 
         RETURN_FALSE_IF(!get_transc(pointer, dest));     //get second argument
 
+        printf("opnode with data %d created. left child: %d\n", op_node->data.val, op_node->left->data.val);        
     }
 
     return true;

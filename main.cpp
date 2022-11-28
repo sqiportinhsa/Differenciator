@@ -15,10 +15,10 @@ int main(int argc, const char **argv) {
 
     printf("head node: %d. its children right %d and left %d\n", expr.origin.head->data.op, expr.origin.head->right->data.val, expr.origin.head->left->data.val);
 
-    diff_tree(&expr.origin, &expr.diffirenciated);
+    diff_tree(&expr.origin, &expr.first_deg);
 
     dump_tree(&expr.origin, "origin\n");
-    dump_tree(&expr.diffirenciated, "diff\n")
+    dump_tree(&expr.first_deg, "diff\n")
 
     expr_dtor(&expr);
 

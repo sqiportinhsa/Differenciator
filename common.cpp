@@ -30,14 +30,20 @@ bool init_expression(Expression *expr, CLArgs *filenames) {
     expr->text_origin = get_input(filenames->input);
 
     init_tree(&expr->origin);
-    init_tree(&expr->diffirenciated);
+    init_tree(&expr->first_deg);
 
-    expr->origin.head = create_orphan_node();
+    expr->origin.head = create_orphan_node(); //fictive head element without data
 
-    if (!descent(expr->text_origin, expr->origin.head)) {
+    expr->origin.head->left = create_empty_node(expr->origin.head); //first tree element
+
+    if (!descent(expr->text_origin, expr->origin.head->left)) {
 
         return false;
     }
+
+    expr->first_deg.head = create_orphan_node();
+
+    expr->first_deg.head->left = create_empty_node(expr->first_deg.head);
 
     return true;
 }
@@ -64,7 +70,7 @@ void expr_dtor(Expression *expr) {
     free(expr->text_origin);
 
     tree_dtor(&expr->origin);
-    tree_dtor(&expr->diffirenciated);
+    tree_dtor(&expr->first_deg);
 }
 
 static char* get_input(const char *filename) {

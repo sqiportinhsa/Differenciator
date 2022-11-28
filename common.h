@@ -9,7 +9,7 @@ static const char *default_output = "GDZ_matematica_5_class.pdf";
 
 struct Expression {
     Tree  origin          = {};
-    Tree  diffirenciated  = {};
+    Tree  first_deg       = {};
     char* text_origin     = nullptr;
     const char* input_fn  = nullptr;
     const char* output_fn = nullptr;

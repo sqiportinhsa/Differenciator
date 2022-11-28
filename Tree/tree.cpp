@@ -156,9 +156,19 @@ void free_node(Tree_node *node) {
         Print_code("node%p [label=\"{type: %s | op:  %d}\",fillcolor=\"%s\",color=\"%s\"];\n",     \
                                      node, Data_is_op,  node->data.op,  FILL__COLOR, FRAME_COLOR);
 
+#define Print_head_node(node)\
+        Print_code("node%p [label=\"{head node}\",fillcolor=\"%s\",color=\"%s\"];\n",     \
+                                                     node, FILL__COLOR, FRAME_COLOR);
 
-#define Print_arrow(node)                                                              \
-        Print_code("node%p->node%p [color=\"%s\"];\n", node->parent, node, ARROW_COLOR);
+
+#define Print_parent_arrow(node)                                                       \
+        Print_code("node%p->node%p [color=\"%s\"];\n", node, node->parent, ARROW_COLOR);
+
+#define Print_right_child_arrow(node)                                                 \
+        Print_code("node%p->node%p [color=\"%s\"];\n", node, node->right, ARROW_COLOR);
+
+#define Print_left_child_arrow(node)                                                 \
+        Print_code("node%p->node%p [color=\"%s\"];\n", node, node->left, ARROW_COLOR);
 
 
 
@@ -235,7 +245,9 @@ void generate_graph_picture(const Tree *tree, char *picture_name) {
     
     printf("given head is %d", tree->head->data.val);
 
-    generate_node_code(tree->head, code_output);
+    Print_head_node(tree->head);
+
+    generate_node_code(tree->head->left, code_output); //skip fictive head
 
     Print_code("}");
 
@@ -291,16 +303,18 @@ static void generate_node_code(Tree_node *node, FILE *code_output) {
     }
     
     if (node->parent) {
-        Print_arrow(node);
+        Print_parent_arrow(node);
         printf("its parent is %d\n", node->parent->data.val);
     }
 
     if (node->left) {
+        Print_left_child_arrow(node);
         printf("node %d left child is %d\n", node->data.val, node->left->data.val);
         generate_node_code(node->left, code_output);
     }
 
     if (node->right) {
+        Print_right_child_arrow(node);
         printf("node %d right child is %d\n", node->data.val, node->right->data.val);
         generate_node_code(node->right, code_output);
     }
