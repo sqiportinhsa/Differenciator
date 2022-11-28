@@ -12,24 +12,6 @@ static const char *Data_is_val = "value";
 static const char *Data_is_var = "variable";
 static const char *Data_is_op  = "operator";
 
-struct Tree_node {
-    Node_type  type     = VAL;
-    Tree_node* right    = nullptr;
-    Tree_node* left     = nullptr;
-    Tree_node* parent   = nullptr;
-
-    union Data {
-        double     val;
-        Operations  op;
-        char      var;
-    } data;
-
-};
-
-struct Tree {
-    Tree_node*       head      = nullptr;
-    Creation_logs*   logs      = nullptr;
-};
 
 enum Tree_err {
     NO_TREE_ERR = 0,
@@ -55,6 +37,25 @@ enum Operations {
     LOG,
     DEG,
     EXP,
+};
+
+struct Tree_node {
+    Node_type  type     = VAL;
+    Tree_node* right    = nullptr;
+    Tree_node* left     = nullptr;
+    Tree_node* parent   = nullptr;
+
+    union Data {
+        double     val;
+        Operations  op;
+        char      var;
+    } data;
+
+};
+
+struct Tree {
+    Tree_node*       head      = nullptr;
+    Creation_logs*   logs      = nullptr;
 };
 
 

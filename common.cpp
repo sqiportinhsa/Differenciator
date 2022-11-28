@@ -8,6 +8,8 @@
 #include "Rec_desc/descent.h"
 #include "Libs/file_reading.hpp"
 
+static char* get_input(const char *filename);
+
 
 #define memory_allocate(ptr, size, type, returning)                                           \
         ptr = (type*) calloc(size, sizeof(type));                                             \
@@ -69,7 +71,7 @@ static char* get_input(const char *filename) {
 
     char *input = nullptr;
 
-    memory_allocate(filename, len, char, nullptr);
+    memory_allocate(input, len, char, nullptr);
 
     read_file(input, len, filename);
 

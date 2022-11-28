@@ -1,6 +1,7 @@
 #include <stdio.h>
 
 #include "common.h"
+#include "Diff/diff.h"
 
 int main(int argc, const char **argv) {
 
@@ -10,7 +11,12 @@ int main(int argc, const char **argv) {
 
     init_expression(&expr, &filenames);
 
-    generate_book(&expr);
+    dump_tree(&expr.origin, "origin\n");
+
+    diff_tree(&expr.origin, &expr.diffirenciated);
+
+    dump_tree(&expr.origin, "origin\n");
+    dump_tree(&expr.diffirenciated, "diff\n")
 
     expr_dtor(&expr);
 

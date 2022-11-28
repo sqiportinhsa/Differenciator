@@ -145,7 +145,7 @@ void free_node(Tree_node *node) {
         fprintf(code_output, format, ##__VA_ARGS__);
 
 #define Print_val_node(node)                                                                       \
-        Print_code("node%p [label=\"{type: %s | val: %f}\",fillcolor=\"%s\",color=\"%s\"];\n",     \
+        Print_code("node%p [label=\"{type: %s | val: %d}\",fillcolor=\"%s\",color=\"%s\"];\n",    \
                                      node, Data_is_val, node->data.val, FILL__COLOR, FRAME_COLOR);
 
 #define Print_var_node(node)                                                                       \
@@ -226,6 +226,8 @@ void generate_graph_picture(const Tree *tree, char *picture_name) {
 
     FILE *code_output = fopen(code_filename, "w");
 
+    printf("%s\n", code_filename);
+
     Print_code("digraph G{\n");
     Print_code("node [shape=record,style=\"filled\"];\n");
     Print_code("splines=ortho;\n");
@@ -254,7 +256,7 @@ static void text_dump_node(Tree_node *node, FILE *output) {
     assert(node   != nullptr);
     assert(output != nullptr);
 
-    fprintf(output, "{ \"%s\"", node->data);
+    fprintf(output, "{ \"%c\"", node->data);
 
     if (node->left != nullptr && node->right != nullptr) {
         fprintf(output, "\n");

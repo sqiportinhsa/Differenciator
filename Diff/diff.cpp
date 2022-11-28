@@ -9,6 +9,10 @@
 
 #include "../DSL.h"
 
+static Tree_node* diff_node(Tree_node *source);
+
+static Tree_node* copy_subtree(Tree_node *source);
+
 
 void diff_tree(Tree *source, Tree *dest) {
 
@@ -65,4 +69,5 @@ static Tree_node* copy_subtree(Tree_node *source) {
     copy->left  = copy_subtree(source->left);
     copy->right = copy_subtree(source->right);
 
+    return copy;
 }

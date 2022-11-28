@@ -1,0 +1,5 @@
+digraph G{
+node [shape=record,style="filled"];
+splines=ortho;
+node0x604000000010 [label="{type: variable | var: (null)}",fillcolor="#9AA5BB",color="#232D42"];
+}
