@@ -250,6 +250,8 @@ static bool get_add_sub(const char **pointer, Tree_node *dest) {
 
     printf("cont get add anf sub\n");
 
+    printf("node data: %d\n", dest->data.val);
+
     while (**pointer == '+' || **pointer == '-') {
 
         Tree_node temp = *dest;                          //save info from dest node
@@ -259,6 +261,8 @@ static bool get_add_sub(const char **pointer, Tree_node *dest) {
         dest->left = create_empty_node(dest);
 
         *(dest->left) = temp;                            //move saved info to left
+
+        dest->left->parent = dest;                       //set saved parent
 
         printf("add after moving to left: %d\n", dest->data.val);
                         
@@ -283,6 +287,8 @@ static bool get_add_sub(const char **pointer, Tree_node *dest) {
         ++(*pointer);
 
         RETURN_FALSE_IF(!get_mul_and_div(pointer, dest));//get second argument
+
+        printf("tree rigth now: work with node %d, its parent %d and brother %d\n", dest->data.val, dest->parent->data.val, dest->parent->left->data.val);
 
     }
 

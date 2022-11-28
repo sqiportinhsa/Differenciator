@@ -13,6 +13,8 @@ int main(int argc, const char **argv) {
 
     dump_tree(&expr.origin, "origin\n");
 
+    printf("head node: %d. its children right %d and left %d\n", expr.origin.head->data.op, expr.origin.head->right->data.val, expr.origin.head->left->data.val);
+
     diff_tree(&expr.origin, &expr.diffirenciated);
 
     dump_tree(&expr.origin, "origin\n");

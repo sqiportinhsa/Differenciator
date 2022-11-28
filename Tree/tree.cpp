@@ -195,6 +195,7 @@ void real_dump_tree(const Tree *tree, const char *file, const char *func, int li
 
     if (tree->head == nullptr) {
         fprintf(output, "\tCan't print data: tree root does not exist\n");
+
     } else {
         fprintf(output, "\tTree data visualisation:\n");
 
@@ -231,6 +232,8 @@ void generate_graph_picture(const Tree *tree, char *picture_name) {
     Print_code("digraph G{\n");
     Print_code("node [shape=record,style=\"filled\"];\n");
     Print_code("splines=ortho;\n");
+    
+    printf("given head is %d", tree->head->data.val);
 
     generate_node_code(tree->head, code_output);
 
@@ -269,14 +272,18 @@ static void text_dump_node(Tree_node *node, FILE *output) {
 
 static void generate_node_code(Tree_node *node, FILE *code_output) {
 
+    printf("\nstart dumping node %d.", node->data.val);
+
     switch (node->type) {
         case VAL:
+            printf("node type is val. ", node->data.val);
             Print_val_node(node);
             break;
         case VAR:
             Print_var_node(node);
             break;        
         case OP:
+            printf("node type is op. ", node->data.op);
             Print_op__node(node);
             break;
         default:
@@ -285,13 +292,16 @@ static void generate_node_code(Tree_node *node, FILE *code_output) {
     
     if (node->parent) {
         Print_arrow(node);
+        printf("its parent is %d\n", node->parent->data.val);
     }
 
     if (node->left) {
+        printf("node %d left child is %d\n", node->data.val, node->left->data.val);
         generate_node_code(node->left, code_output);
     }
 
     if (node->right) {
+        printf("node %d right child is %d\n", node->data.val, node->right->data.val);
         generate_node_code(node->right, code_output);
     }
 }
