@@ -141,7 +141,7 @@ static bool get_variable(const char **pointer, Tree_node *dest) {
     assert(*pointer != nullptr);
     assert( dest    != nullptr);
 
-    if (isalpha(**pointer)) {
+    if (isalpha(*(*pointer + 0)) && !isalpha(*(*pointer + 1))) {
 
         dest->type = VAR;
 
@@ -191,10 +191,10 @@ static bool get_from_brackets(const char **pointer, Tree_node *dest) {
 
 
 #define CHECK_IF_FUNC_IS(name, func_type)                   \
-        if (strncasecmp(func, name, sizeof(name)) == 0) {   \
+        if (strncasecmp(func, name, strlen(name)) == 0) {   \
             dest->type = OP;                                \
             dest->data.op = func_type;                      \
-            *pointer += sizeof(name);                       \
+            *pointer += strlen(name);                       \
             func_parsed = true;                             \
         }
 
@@ -207,22 +207,20 @@ static bool get_transc(const char **pointer, Tree_node *dest) {
 
     char func[max_name_len] = {};
 
-    sscanf(*pointer, "%c%c%c", func[0], func[1], func[2]);
-
-    if (get_from_brackets(pointer, dest)) {
-        return true;
-    }
+    sscanf(*pointer, "%c%c%c", &func[0], &func[1], &func[2]);
 
     bool func_parsed = false;
 
     CHECK_IF_FUNC_IS("sin", SIN);
     CHECK_IF_FUNC_IS("cos", COS);
-    CHECK_IF_FUNC_IS("tg",  TAN);
+    CHECK_IF_FUNC_IS("tan", TAN);
     CHECK_IF_FUNC_IS("ctg", CTG);
     CHECK_IF_FUNC_IS("log", LOG);
     CHECK_IF_FUNC_IS("exp", EXP);
 
-    RETURN_FALSE_IF(!func_parsed);
+    if (!func_parsed) {
+        return get_from_brackets(pointer, dest);
+    }
 
     RETURN_FALSE_IF(**pointer != '(');
 
@@ -230,7 +228,7 @@ static bool get_transc(const char **pointer, Tree_node *dest) {
     
     dest->left = create_empty_node(dest);
     
-    RETURN_FALSE_IF(!get_from_brackets(pointer, dest));
+    RETURN_FALSE_IF(!get_from_brackets(pointer, dest->left));
 
     RETURN_FALSE_IF(**pointer != ')');
 
@@ -312,6 +310,8 @@ static bool get_mul_and_div(const char **pointer, Tree_node *dest) {
         dest->left = create_empty_node(dest);
 
         *(dest->left) = temp;                            //move saved info to left
+
+        dest->left->parent = dest;                       //set saved parent
                          
         dest->type = OP;                                 //make dest the operation node
                          
