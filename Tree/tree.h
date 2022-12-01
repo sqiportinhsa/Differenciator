@@ -96,8 +96,15 @@ void tree_dtor(Tree *tree);
 #define dump_tree(tree, message, ...) real_dump_tree(tree, __FILE__, __PRETTY_FUNCTION__, __LINE__,\
                                                                            message, ##__VA_ARGS__);
 
+#define dump_subtree(tree, message, ...) real_dump_subtree(tree, __FILE__, __PRETTY_FUNCTION__, \
+                                                              __LINE__, message, ##__VA_ARGS__);
+
 void real_dump_tree(const Tree *tree, const char *file, const char *func, int line, 
                                                                const char *message, ...);
+
+void real_dump_subtree(const Tree_node *head, const char *file, const char *func, int line, 
+                                                                       const char *message, ...);
+
 
 void generate_graph_picture(const Tree *tree, char *picture_name);
 

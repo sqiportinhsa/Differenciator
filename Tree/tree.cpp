@@ -7,7 +7,7 @@
 #include "../Libs/file_reading.hpp"
 
 
-static void generate_node_code(Tree_node *node, FILE *code_output);
+static void generate_node_code(const Tree_node *node, FILE *code_output);
 
 
 static void text_dump_node(Tree_node *node, FILE *output);
@@ -16,8 +16,6 @@ static void text_dump_node(Tree_node *node, FILE *output);
 static const int max_file_with_graphviz_code_name_len = 30;
 static const int max_generation_png_command_len = 200;
 static const int max_png_file_name_len = 30;
-
-#define DEBUG
 
 
 //----------------------------- INITIALISATION SECTION -------------------------------------------//
@@ -61,9 +59,9 @@ Tree_node* create_orphan_node(Tree_node *left, Tree_node *right) {
 //------------- FILLING WITH DATA -------------//
 
 Tree_node* create_node(Node_type type, char var, 
-                      Tree_node *left, Tree_node *right) {
+                      Tree_node *left, Tree_node *right) { //todo delete type cause its obvious
 
-    Tree_node *node = create_empty_node(left, right);
+    Tree_node *node = create_orphan_node(left, right);
 
     node->type = type;
 
@@ -75,7 +73,7 @@ Tree_node* create_node(Node_type type, char var,
 Tree_node* create_node(Node_type type, int val, 
                        Tree_node *left, Tree_node *right) {
 
-    Tree_node *node = create_empty_node(left, right);
+    Tree_node *node = create_orphan_node(left, right);
 
     node->type = type;
 
@@ -87,7 +85,7 @@ Tree_node* create_node(Node_type type, int val,
 Tree_node* create_node(Node_type type, Operations op, 
                        Tree_node *left, Tree_node *right) {
 
-    Tree_node *node = create_empty_node(left, right);
+    Tree_node *node = create_orphan_node(left, right);
 
     node->type = type;
 
@@ -242,6 +240,61 @@ void real_dump_tree(const Tree *tree, const char *file, const char *func, int li
 
 }
 
+void real_dump_subtree(const Tree_node *head, const char *file, const char *func, int line, 
+                                                               const char *message, ...) {
+    
+    FILE *output = GetLogStream();
+
+    fprintf(output, "Subree dump called in %s(%d), function %s: ", file, line, func);
+
+    va_list ptr = {};
+    va_start(ptr, message);
+    vfprintf(output, message, ptr);
+    va_end(ptr);
+
+    fprintf(output, "\n</b>");
+    
+    if (head == nullptr) {
+        fprintf(output, "Can't dump tree from nullptr pointer\n");
+        return;
+    }
+
+    fprintf(output, "Subtree head [%p] with head data %d\n", head, head->data.val);
+
+    char png_file_name[max_png_file_name_len] = {};
+
+    generate_file_name(png_file_name, "png");
+
+    char code_filename[max_file_with_graphviz_code_name_len] = {};
+    generate_file_name(code_filename, "dot");
+
+    FILE *code_output = fopen(code_filename, "w");
+
+    DEBUG_PRINT("%s\n", code_filename);
+
+    Print_code("digraph G{\n");
+    Print_code("node [shape=record,style=\"filled\"];\n");
+    Print_code("splines=ortho;\n");
+
+    generate_node_code(head, code_output);
+
+    Print_code("}");
+
+    fclose(code_output);
+
+    char command[max_generation_png_command_len] = {};
+
+    sprintf(command, "dot %s -o %s -T png", code_filename, png_file_name);
+
+    system(command);
+
+    fprintf(GetLogStream(), "Picture is generated. You can find it by name %s.\n", png_file_name);
+
+    fprintf(output, "\n");
+
+    fflush(output);
+}
+
 void generate_graph_picture(const Tree *tree, char *picture_name) {
     assert(tree         != nullptr);
     assert(picture_name != nullptr);
@@ -296,20 +349,20 @@ static void text_dump_node(Tree_node *node, FILE *output) {
     fprintf(output, " }\n");
 }
 
-static void generate_node_code(Tree_node *node, FILE *code_output) {
+static void generate_node_code(const Tree_node *node, FILE *code_output) {
 
-    DEBUG_PRINT("\nstart dumping node %d.", node->data.val);
+    DEBUG_PRINT("start dumping node %d.\n", node->data.val);
 
     switch (node->type) {
         case VAL:
-            DEBUG_PRINT("node type is val. ", node->data.val);
+            DEBUG_PRINT("node type is val. \n", node->data.val);
             Print_val_node(node);
             break;
         case VAR:
             Print_var_node(node);
             break;        
         case OP:
-            DEBUG_PRINT("node type is op. ", node->data.op);
+            DEBUG_PRINT("node type is op. \n", node->data.op);
             Print_op__node(node);
             break;
         default:
