@@ -14,6 +14,21 @@ static Tree_node* diff_node(Tree_node *source);
 static Tree_node* copy_subtree(Tree_node *source);
 
 
+#define DEBUG
+
+#ifdef DEBUG
+
+#define DEBUG_PRINT(str, ...) {\
+    printf ("Func: %20s  line %3d " str, __func__, __LINE__, ##__VA_ARGS__);\
+}
+
+#else 
+
+#define DEBUG_PRINT ;
+
+#endif
+
+
 void diff_tree(Tree *source, Tree *dest) {
 
     dest->head->left = diff_node(source->head->left);
@@ -26,15 +41,23 @@ static Tree_node* diff_node(Tree_node *source) {
 
     if (source->type == VAL) {
 
+        DEBUG_PRINT("diff value node.    val: %d\n", source->data.val);
+
         return Diff_const;
     }
 
     if (source->type == VAR) {
 
+        DEBUG_PRINT("diff variable node. var: %d\n", source->data.var);
+
         return Diff_var;
     }
 
     Tree_node *dest = create_empty_node();
+
+    DEBUG_PRINT("diff operation node. op: %d\n", source->data.op);
+
+    dump_subtree(source, "Subtree to diffirenciate:");
 
     switch (source->data.op) {
         case ADD: Ret_dest(Add(DL, DR));
