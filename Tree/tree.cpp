@@ -17,6 +17,8 @@ static const int max_file_with_graphviz_code_name_len = 30;
 static const int max_generation_png_command_len = 200;
 static const int max_png_file_name_len = 30;
 
+#define DEBUG
+
 
 //----------------------------- INITIALISATION SECTION -------------------------------------------//
 
@@ -171,6 +173,18 @@ void free_node(Tree_node *node) {
         Print_code("node%p->node%p [color=\"%s\"];\n", node, node->left, ARROW_COLOR);
 
 
+#ifdef DEBUG
+
+#define DEBUG_PRINT(str, ...) {\
+    printf ("Func: %20s  line %3d " str, __func__, __LINE__, ##__VA_ARGS__);\
+}
+
+#else 
+
+#define DEBUG_PRINT ;
+
+#endif
+
 
 void real_dump_tree(const Tree *tree, const char *file, const char *func, int line, 
                                                                const char *message, ...) {
@@ -237,13 +251,13 @@ void generate_graph_picture(const Tree *tree, char *picture_name) {
 
     FILE *code_output = fopen(code_filename, "w");
 
-    printf("%s\n", code_filename);
+    DEBUG_PRINT("%s\n", code_filename);
 
     Print_code("digraph G{\n");
     Print_code("node [shape=record,style=\"filled\"];\n");
     Print_code("splines=ortho;\n");
     
-    printf("given head is %d", tree->head->data.val);
+    DEBUG_PRINT("given head is %d", tree->head->data.val);
 
     Print_head_node(tree->head);
 
@@ -284,18 +298,18 @@ static void text_dump_node(Tree_node *node, FILE *output) {
 
 static void generate_node_code(Tree_node *node, FILE *code_output) {
 
-    printf("\nstart dumping node %d.", node->data.val);
+    DEBUG_PRINT("\nstart dumping node %d.", node->data.val);
 
     switch (node->type) {
         case VAL:
-            printf("node type is val. ", node->data.val);
+            DEBUG_PRINT("node type is val. ", node->data.val);
             Print_val_node(node);
             break;
         case VAR:
             Print_var_node(node);
             break;        
         case OP:
-            printf("node type is op. ", node->data.op);
+            DEBUG_PRINT("node type is op. ", node->data.op);
             Print_op__node(node);
             break;
         default:
@@ -304,18 +318,18 @@ static void generate_node_code(Tree_node *node, FILE *code_output) {
     
     if (node->parent) {
         Print_parent_arrow(node);
-        printf("its parent is %d\n", node->parent->data.val);
+        DEBUG_PRINT("its parent is %d\n", node->parent->data.val);
     }
 
     if (node->left) {
         Print_left_child_arrow(node);
-        printf("node %d left child is %d\n", node->data.val, node->left->data.val);
+        DEBUG_PRINT("node %d left child is %d\n", node->data.val, node->left->data.val);
         generate_node_code(node->left, code_output);
     }
 
     if (node->right) {
         Print_right_child_arrow(node);
-        printf("node %d right child is %d\n", node->data.val, node->right->data.val);
+        DEBUG_PRINT("node %d right child is %d\n", node->data.val, node->right->data.val);
         generate_node_code(node->right, code_output);
     }
 }
