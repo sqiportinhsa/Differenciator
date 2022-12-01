@@ -14,6 +14,9 @@ clean:
 folders:
 	mkdir -p $(FOLDERS)
 
+graphs_clean:
+	find . -name "*.png" -delete
+
 $(DIFF): obj/diff.o obj/tree.o obj/file_reading.o obj/logging.o obj/main.o obj/descent.o obj/common.o
 	g++ obj/main.o obj/diff.o obj/tree.o obj/file_reading.o obj/logging.o obj/common.o obj/descent.o -o $(DIFF) $(CPPFLAGS)
 
