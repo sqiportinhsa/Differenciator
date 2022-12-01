@@ -35,6 +35,7 @@
 #define Ret_dest(calc_func)    \
         dest = calc_func;      \
         set_as_parent(dest);   \
+        dump_subtree(dest, "");    \
         return dest;
 
 #endif
