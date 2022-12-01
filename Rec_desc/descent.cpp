@@ -11,6 +11,8 @@
 
 const int max_name_len = 3;
 
+#define DEBUG
+
 //------------------------------------------------------------------------------------------------//
 //                                                                                                //
 //                                   DECLARATIONS SECTION                                         //
@@ -54,6 +56,7 @@ static bool get_mul_and_div(const char **pointer, Tree_node *dest);
 //  Get_add_sub       ::= Get_mul_and_div {[+, -]}*
 //  Get_mul_and_div   ::= Get_transc {[*, /]}*
 //  Get_transc        ::= [sin/cos/...] '(' Get_from_brackets ')' | Get_from_brackets
+//  Get_deg           ::= TODO
 //  Get_from_brackets ::= '(' Get_add_sub ')' | Get_argument
 //  Get_argument      ::= Get_value | Get_variable
 //  Get_value         ::= ['0' - '9']+
@@ -320,7 +323,7 @@ static bool get_add_sub(const char **pointer, Tree_node *dest) {
 
         prev = dest->parent;
 
-        RETURN_FALSE_IF(!get_mul_and_div(pointer, dest));//get second argument
+        RETURN_FALSE_IF(!get_mul_and_div(pointer, dest)); //get second argument
 
         dest = prev->right;
 
