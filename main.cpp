@@ -1,4 +1,5 @@
 #include <stdio.h>
+#include <assert.h>
 
 #include "common.h"
 #include "Diff/diff.h"
@@ -13,12 +14,12 @@ int main(int argc, const char **argv) {
 
     dump_tree(&expr.origin, "origin\n");
 
-    printf("head node: %d. its children right %d and left %d\n", expr.origin.head->data.op, expr.origin.head->right->data.val, expr.origin.head->left->data.val);
-
     diff_tree(&expr.origin, &expr.first_deg);
 
+    assert(expr.first_deg.head->left);
+
     dump_tree(&expr.origin, "origin\n");
-    dump_tree(&expr.first_deg, "diff\n")
+    dump_tree(&expr.first_deg, "diff\n");
 
     expr_dtor(&expr);
 
