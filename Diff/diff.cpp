@@ -16,7 +16,7 @@ static Tree_node* copy_subtree(Tree_node *source);
 
 void diff_tree(Tree *source, Tree *dest) {
 
-    source->head = diff_node(dest->head);
+    dest->head->left = diff_node(source->head->left);
 
 }
 
@@ -59,15 +59,20 @@ static Tree_node* diff_node(Tree_node *source) {
 
 static Tree_node* copy_subtree(Tree_node *source) {
 
-    assert(source != nullptr);
-
     Tree_node *copy = create_empty_node();
 
     copy->data = source->data;
     copy->type = source->type;
 
-    copy->left  = copy_subtree(source->left);
-    copy->right = copy_subtree(source->right);
+    if (source->left) {
+
+        copy->left  = copy_subtree(source->left);
+    }
+
+    if (source->right) {
+
+        copy->right = copy_subtree(source->right);
+    }
 
     return copy;
 }
