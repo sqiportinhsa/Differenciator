@@ -5,8 +5,8 @@
 
 #define DL diff_node(source->left)
 #define DR diff_node(source->right)
-#define CR copy_subtree(source->left)
-#define CL copy_subtree(source->right)
+#define CL copy_subtree(source->left)
+#define CR copy_subtree(source->right)
 
 #define Diff_const create_node(VAL, 0)
 
