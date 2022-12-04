@@ -77,9 +77,7 @@ static void print_head() {
                    "\\usepackage{wrapfig}\n"
                    "\\usepackage{floatflt}\n"
                    "\\usepackage{lipsum}\n"
-                   "\\usepackage{concmath}\n"
                    "\\usepackage{euler}\n"
-                   "\\usepackage{libertine}\n"
                    "\n"
                    "\\oddsidemargin=0mm\n"
                    "\\textwidth=160mm\n"
@@ -89,7 +87,7 @@ static void print_head() {
                    "\\parindent=5pt\n"
                    "\\parskip=8pt\n"
                    "\\pagestyle{empty}\n"
-                   "\\usepackage[normalem]{ulem} % uline\n"
+                   "\\usepackage[normalem]{ulem}\n"
                    "\\usepackage{mdframed}\n"
                    "\\usepackage{amsthm}\n");
 
@@ -105,7 +103,7 @@ static void print_head() {
 //--------------------------------- PRINTING EXPRESSIONS -----------------------------------------//
 
 
-void latex_print_subtree(Tree_node *head) {
+void latex_print_expr(Tree_node *head) {
 
     print_to_latex("$$");
 
@@ -113,6 +111,18 @@ void latex_print_subtree(Tree_node *head) {
 
     print_to_latex("$$\n");
 
+}
+
+void latex_print_diff(const Tree_node *orig, const Tree_node *diff) {
+    print_to_latex("$$\\frac{d}{dx}(");
+
+    latex_print_node(orig);
+
+    print_to_latex(") = ");
+
+    latex_print_node(diff);
+
+    print_to_latex("$$\n");
 }
 
 static void latex_print_node(const Tree_node *node) {
@@ -185,7 +195,7 @@ static void latex_print_transc(const Tree_node *node) {
 
     switch (node->data.op) {
         case SIN:
-            print_to_latex("sin(");
+            print_to_latex("\\sin(");
             break;
         case COS:
             print_to_latex("\\cos(");
@@ -216,7 +226,7 @@ static void latex_print_div(const Tree_node *node) {
     assert(node != nullptr);
     assert(node->data.op == DIV);
 
-    print_to_latex("frag{");
+    print_to_latex("\\frac{");
     latex_print_node(node->left);
     print_to_latex("}{");
     latex_print_node(node->right);
@@ -251,7 +261,7 @@ static void latex_print_mul(const Tree_node *node) {
 static void latex_print_deg(const Tree_node *node) {
 
     assert(node != nullptr);
-    assert(node->data.op != DEG);
+    assert(node->data.op == DEG);
 
     print_to_latex("{");
     latex_print_node(node->left);

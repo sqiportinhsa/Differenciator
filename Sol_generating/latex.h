@@ -11,4 +11,6 @@ void init_latex(const char *filename);
 
 void close_latex();
 
-void latex_print_subtree(Tree_node *head);
+void latex_print_expr(Tree_node *head);
+
+void latex_print_diff(const Tree_node *orig, const Tree_node *diff);
