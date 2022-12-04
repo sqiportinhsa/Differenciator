@@ -49,6 +49,14 @@ Tree_node* create_empty_node(Tree_node *parent, Tree_node *left, Tree_node *righ
 
     node->parent = parent;
 
+    if (node->left) {
+        node->left->parent = node;
+    }
+
+    if (node->right) {
+        node->right->parent = node;
+    }
+
     return node;
 }
 
