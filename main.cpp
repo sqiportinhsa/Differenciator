@@ -15,6 +15,8 @@ int main(int argc, const char **argv) {
 
     init_latex(filenames.output);
 
+    dump_tree(&expr.origin, "origin");
+
     diff_tree(&expr.origin, &expr.first_deg);
 
     close_latex();
