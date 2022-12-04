@@ -30,9 +30,9 @@ bool init_expression(Expression *expr, const char *input) {
 
     expr->origin.head = create_orphan_node(); //fictive head element without data
 
-    expr->origin.head->left = create_empty_node(expr->origin.head); //first tree element
+    expr->origin.head->left = descent(expr->text_origin); //first tree element
 
-    if (!descent(expr->text_origin, expr->origin.head->left)) {
+    if (expr->origin.head->left == nullptr) {
 
         return false;
     }
