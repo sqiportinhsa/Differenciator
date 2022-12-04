@@ -8,6 +8,21 @@ const char *latex_filename = "latex_output.tex";
 
 FILE *tex_output = nullptr;
 
+static void print_head();
+
+static void latex_print_node(const Tree_node *node);
+
+static void latex_print_add_and_sub(const Tree_node *node);
+
+static void latex_print_transc(const Tree_node *node);
+
+static void latex_print_div(const Tree_node *node);
+
+static void latex_print_mul(const Tree_node *node);
+
+static void latex_print_deg(const Tree_node *node);
+
+static bool priority_lower_than_mul(const Tree_node *node);
 
 //-------------------------- OUTPUT FUNCTIONS SECTION --------------------------------------------//
 
@@ -46,6 +61,8 @@ void init_latex(const char *filename) {
 
 void close_latex() {
 
+    print_to_latex("\\end{document}");
+
     fclose(get_output_stream());
 }
 
@@ -78,9 +95,9 @@ static void print_head() {
 
     print_to_latex("\\begin{document}\n"
                    "\\begin{center}\n"
-                   "\\Large\textbf{Пособие по математическому анализу.}\n"
+                   "\\Large\\textbf{Пособие по математическому анализу.}\n"
                    "\n"
-                   "\\large\textbf{Дифферинцирование на практике с подробным решением.}\n"
+                   "\\large\\textbf{Дифферинцирование на практике с подробным решением.}\n"
                    "\\end{center}\n\n");
 
 }
@@ -94,11 +111,11 @@ void latex_print_subtree(Tree_node *head) {
 
     latex_print_node(head);
 
-    print_to_latex("$$");
+    print_to_latex("$$\n");
 
 }
 
-static void latex_print_node(Tree_node *node) {
+static void latex_print_node(const Tree_node *node) {
 
     if (node->type == VAL) {
 
@@ -141,7 +158,7 @@ static void latex_print_node(Tree_node *node) {
     }
 }
 
-static void latex_print_add_and_sub(Tree_node *node) {
+static void latex_print_add_and_sub(const Tree_node *node) {
 
     assert(node != nullptr);
     assert(node->data.op == ADD || node->data.op == SUB);
@@ -162,7 +179,7 @@ static void latex_print_add_and_sub(Tree_node *node) {
     latex_print_node(node->right);
 }
 
-static void latex_print_transc(Tree_node *node) {
+static void latex_print_transc(const Tree_node *node) {
 
     assert(node != nullptr);
 
@@ -172,14 +189,19 @@ static void latex_print_transc(Tree_node *node) {
             break;
         case COS:
             print_to_latex("\\cos(");
+            break;
         case TAN:
             print_to_latex("\\tan(");
+            break;
         case CTG:
             print_to_latex("\\ctg(");
+            break;
         case EXP:
             print_to_latex("\\exp(");
+            break;
         case LOG:
             print_to_latex("\\ln(");
+            break;
         default:
             break;
     }
@@ -189,7 +211,7 @@ static void latex_print_transc(Tree_node *node) {
     print_to_latex(")");
 }
 
-static void latex_print_div(Tree_node *node) {
+static void latex_print_div(const Tree_node *node) {
 
     assert(node != nullptr);
     assert(node->data.op != DIV);
@@ -211,7 +233,7 @@ static void latex_print_div(Tree_node *node) {
         latex_print_node(node);                      \
     }
 
-static void latex_print_mul(Tree_node *node) {
+static void latex_print_mul(const Tree_node *node) {
 
     assert(node != nullptr);
     assert(node->data.val == MUL);
@@ -226,7 +248,7 @@ static void latex_print_mul(Tree_node *node) {
 
 #undef PRINT_NODE_WITH_BRACKETS
 
-static void latex_print_deg(Tree_node *node) {
+static void latex_print_deg(const Tree_node *node) {
 
     assert(node != nullptr);
     assert(node->data.op != DEG);
