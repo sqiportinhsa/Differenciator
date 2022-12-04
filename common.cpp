@@ -19,15 +19,11 @@ const int barrier_size = 3;
             return returning;                                                                 \
         }
 
-bool init_expression(Expression *expr, CLArgs *filenames) {
+bool init_expression(Expression *expr, const char *input) {
     
     assert(expr      != nullptr);
-    assert(filenames != nullptr);
 
-    expr->input_fn  = filenames->input;
-    expr->output_fn = filenames->output;
-
-    expr->text_origin = get_input(filenames->input);
+    expr->text_origin = get_input(input);
 
     init_tree(&expr->origin);
     init_tree(&expr->first_deg);

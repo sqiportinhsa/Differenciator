@@ -11,11 +11,9 @@ struct Expression {
     Tree  origin          = {};
     Tree  first_deg       = {};
     char* text_origin     = nullptr;
-    const char* input_fn  = nullptr;
-    const char* output_fn = nullptr;
 };
 
-bool init_expression(Expression *expr, CLArgs *filenames);
+bool init_expression(Expression *expr, const char *input);
 
 CLArgs get_filenames(int argc, const char **argv);
 
