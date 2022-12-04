@@ -3,6 +3,6 @@
 
 #include "../common.h"
 
-bool descent(const char *pointer, Tree_node *dest);
+Tree_node* descent(const char *pointer);
 
 #endif
