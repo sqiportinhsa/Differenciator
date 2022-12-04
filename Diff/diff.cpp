@@ -6,6 +6,7 @@
 #include "../Libs/file_reading.hpp"
 #include "../Tree/tree.h"
 #include "../Rec_desc/descent.h"
+#include "../Sol_generating/latex.h"
 
 #include "../DSL.h"
 
@@ -39,8 +40,10 @@ static Tree_node* diff_node(Tree_node *source) {
 
     assert(source != nullptr);
 
-    if (source->type == VAL) {
+    Tree_node *dest = nullptr;
 
+    if (source->type == VAL) {
+    
         DEBUG_PRINT("diff value node.    val: %d\n", source->data.val);
 
         return Diff_const;
@@ -53,17 +56,14 @@ static Tree_node* diff_node(Tree_node *source) {
         return Diff_var;
     }
 
-    Tree_node *dest = create_empty_node();
-
     DEBUG_PRINT("diff operation node. op: %d\n", source->data.op);
-
     dump_subtree(source, "Subtree to diffirenciate:");
 
     switch (source->data.op) {
         case ADD: Ret_dest(Add(DL, DR));
         case SUB: Ret_dest(Sub(DL, DR));
         case MUL: Ret_dest(Add(Mul(DL, CR), Mul(CL, DR)));
-        case DIV: Ret_dest(Sub(Div(DL, CR), Div(Mul(CL, DR), Mul(CR, CR))));
+        case DIV: Ret_dest(Sub(Div(DL, CR), Div(Mul(CL, DR), Square(CR))));
         case SIN: Ret_dest(Mul(Cos(CL), DL));
         case COS: Ret_dest(Mul(Mul(Sin(CL), Const(-1)), DL));
         case TAN: Ret_dest(Mul(Div(Const(1), Square(Cos(CL))), DL));
