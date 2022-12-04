@@ -8,9 +8,15 @@
 #define CL copy_subtree(source->left)
 #define CR copy_subtree(source->right)
 
-#define Diff_const create_node(VAL, 0)
+#define Diff_const                          \
+        dest = create_node(VAL, 0);         \
+        latex_print_diff(source, dest);     \
+        return dest;
 
-#define Diff_var create_node(VAL, 1)
+#define Diff_var                            \
+        dest = create_node(VAL, 1);         \
+        latex_print_diff(source, dest);     \
+        return dest;
 
 #define Const(c) create_node(VAL, c)
 
@@ -21,7 +27,7 @@
 
 #define Deg(l, r) create_node(OP, DEG, l, r)
 
-#define Square(l) create_node(OP, MUL, l, l)
+#define Square(l) create_node(OP, DEG, l, Const(2))
 
 #define Cos(l) create_node(OP, COS, l)
 #define Sin(l) create_node(OP, SIN, l)
@@ -32,10 +38,10 @@
 
 #define Log(l) create_node(OP, LOG, l)
 
-#define Ret_dest(calc_func)    \
-        dest = calc_func;      \
-        set_as_parent(dest);   \
-        dump_subtree(dest, "");    \
+#define Ret_dest(calc_func)                 \
+        dest = calc_func;                   \
+        set_as_parent(dest);                \
+        latex_print_diff(source, dest);     \
         return dest;
 
 #endif
