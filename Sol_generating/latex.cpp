@@ -214,7 +214,7 @@ static void latex_print_transc(const Tree_node *node) {
 static void latex_print_div(const Tree_node *node) {
 
     assert(node != nullptr);
-    assert(node->data.op != DIV);
+    assert(node->data.op == DIV);
 
     print_to_latex("frag{");
     latex_print_node(node->left);
