@@ -3,6 +3,7 @@
 
 #include "common.h"
 #include "Diff/diff.h"
+#include "Sol_generating/latex.h"
 
 int main(int argc, const char **argv) {
 
@@ -10,16 +11,13 @@ int main(int argc, const char **argv) {
 
     Expression expr = {};
 
-    init_expression(&expr, &filenames);
+    init_expression(&expr, filenames.input);
 
-    dump_tree(&expr.origin, "origin\n");
+    init_latex(filenames.output);
 
     diff_tree(&expr.origin, &expr.first_deg);
 
-    assert(expr.first_deg.head->left);
-
-    dump_tree(&expr.origin, "origin\n");
-    dump_tree(&expr.first_deg, "diff\n");
+    close_latex();
 
     expr_dtor(&expr);
 
