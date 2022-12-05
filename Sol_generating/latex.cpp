@@ -1,8 +1,11 @@
 #include <stdio.h>
 #include <stdarg.h>
 #include <assert.h>
+#include <stdlib.h>
 
 #include "latex.h"
+
+#include "../phrases.h"
 
 const char *latex_filename = "latex_output.tex";
 
@@ -47,6 +50,9 @@ void print_to_latex(const char *message, ...) {
 
 }
 
+void latex_print_phrase() {
+    print_to_latex("%s\n", Phrases[rand() % Phrases_num]);
+}
 
 //------------------------ PRINTING COMMON -------------------------------------------------------//
 
@@ -116,6 +122,9 @@ void latex_print_expr(Tree_node *head) {
 }
 
 void latex_print_diff(const Tree_node *orig, const Tree_node *diff) {
+    
+    latex_print_phrase();
+
     print_to_latex("$$\\frac{d}{dx}(");
 
     latex_print_node(orig);
