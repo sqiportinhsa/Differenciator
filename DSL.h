@@ -88,4 +88,12 @@
     	}                                                 \
     	return node;
 
+#define MULTIPLY_BY_ZERO(checking)                        \
+		if (checking->data.val == 0) {                    \
+			Tree_node *new_node = Const(0);               \
+    	    latex_print_diff(node, new_node);             \
+    	    free_node(node);                              \
+    	    return new_node;                              \
+    	}                                                 \
+
 #endif

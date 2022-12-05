@@ -79,6 +79,9 @@ static Tree_node* simplify_mul(Tree_node *node) {
 
     REPLACE_TWO_VALUES(MUL, *);
 
+    MULTIPLY_BY_ZERO(node->left);
+    MULTIPLY_BY_ZERO(node->right);
+
     return node;
 }
 
