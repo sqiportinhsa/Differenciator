@@ -10,19 +10,21 @@ FILE *tex_output = nullptr;
 
 static void print_head();
 
-static void latex_print_node(const Tree_node *node);
 
-static void latex_print_add_and_sub(const Tree_node *node);
+static void latex_print_node         (const Tree_node *node);
 
-static void latex_print_transc(const Tree_node *node);
+static void latex_print_add_and_sub  (const Tree_node *node);
 
-static void latex_print_div(const Tree_node *node);
+static void latex_print_transc       (const Tree_node *node);
 
-static void latex_print_mul(const Tree_node *node);
+static void latex_print_div          (const Tree_node *node);
+        
+static void latex_print_mul          (const Tree_node *node);
+        
+static void latex_print_deg          (const Tree_node *node);
 
-static void latex_print_deg(const Tree_node *node);
+static bool priority_lower_than_mul  (const Tree_node *node);
 
-static bool priority_lower_than_mul(const Tree_node *node);
 
 //-------------------------- OUTPUT FUNCTIONS SECTION --------------------------------------------//
 
