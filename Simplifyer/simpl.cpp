@@ -10,6 +10,8 @@
 #include "../DSL.h"
 
 
+static Tree_node* simplify_subtree (Tree_node* node);
+
 static Tree_node* simplify_add_sub (Tree_node *node);
 
 static Tree_node* simplify_mul     (Tree_node *node);
@@ -17,7 +19,25 @@ static Tree_node* simplify_mul     (Tree_node *node);
 static Tree_node* simplify_deg     (Tree_node *node);
 
 
-Tree_node* simplify_subtree(Tree_node* node) {
+void simplify_tree(Tree *tree) {
+
+    print_to_latex("\\section{Упрощение полученной формулы}"
+                   "Почему-то все любят, когда просто, и никто не любит, когда сложно. Однако, "
+                   "усложнять внезапно оказывается легко, \\sout{вы можете видеть это на примере "
+                   "моего кода}, а упрощать сложно. Поэтому я сам сделаю это для вас, а вам "
+                   "останется лишь наблюдать за этим прекрасным процессом. Приступим:\n\n");
+
+    tree->head->left = simplify_subtree(tree->head->left);
+
+    set_as_parent(tree->head->left);
+
+    print_to_latex("Объединяя вышесказанное получим \\sout{неуд за таску} производную в упрощенном "
+                   "виде:\n\n");
+
+    latex_print_expr(tree->head->left);
+}
+
+static Tree_node* simplify_subtree(Tree_node* node) {
     if (node->left) {
         if (node->left->type == OP) {
             node->left = simplify_subtree(node->left);
