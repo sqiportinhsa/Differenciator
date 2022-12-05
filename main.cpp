@@ -4,6 +4,7 @@
 #include "common.h"
 #include "Diff/diff.h"
 #include "Sol_generating/latex.h"
+#include "Simplifyer/simpl.h"
 
 int main(int argc, const char **argv) {
 
@@ -15,9 +16,11 @@ int main(int argc, const char **argv) {
 
     init_latex(filenames.output);
 
-    dump_tree(&expr.origin, "origin");
+    print_diff_introduction(&expr.origin);
 
     diff_tree(&expr.origin, &expr.first_deg);
+
+    simplify_tree(&expr.first_deg);
 
     close_latex();
 
