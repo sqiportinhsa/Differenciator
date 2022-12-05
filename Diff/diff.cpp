@@ -32,8 +32,16 @@ static Tree_node* copy_subtree(Tree_node *source);
 
 void diff_tree(Tree *source, Tree *dest) {
 
+    print_to_latex("\\section{Дифференцирование}");
+
     dest->head->left = diff_node(source->head->left);
 
+    print_to_latex("Таким образом получаем следующую производную:\n\n");
+
+    latex_print_expr(dest->head->left);
+
+    print_to_latex("Вы ещё не утомились? Самое время взять чашечку чая и печеньки, потому что мы "
+                   "переходим к следующему этапу работы с выражением\n\n");
 }
 
 static Tree_node* diff_node(Tree_node *source) {
