@@ -149,7 +149,7 @@ static Tree_node* get_value(const char **pointer) {
         return nullptr;
     }
 
-    return create_node(VAL, val);
+    return create_node(val);
 
 }
 
@@ -160,7 +160,7 @@ static Tree_node* get_variable(const char **pointer) {
 
     if (isalpha(*(*pointer + 0)) && !isalpha(*(*pointer + 1))) {
 
-        Tree_node *node = create_node(VAR, **pointer);
+        Tree_node *node = create_node(**pointer);
 
         ++(*pointer);
 
@@ -281,7 +281,7 @@ static Tree_node* get_add_and_sub(const char **pointer) {
 
         ++(*pointer);
 
-        node = create_node(OP, op, node, get_mul_and_div(pointer));
+        node = create_node(op, node, get_mul_and_div(pointer));
 
         RETURN_NULLPTR_IF(node        == nullptr);
         RETURN_NULLPTR_IF(node->right == nullptr);
@@ -317,7 +317,7 @@ static Tree_node* get_mul_and_div(const char **pointer) {
 
         ++(*pointer);
 
-        node = create_node(OP, op, node, get_deg(pointer));
+        node = create_node(op, node, get_deg(pointer));
 
         RETURN_NULLPTR_IF(node        == nullptr);
         RETURN_NULLPTR_IF(node->right == nullptr);
@@ -345,7 +345,7 @@ static Tree_node* get_deg(const char **pointer) {
 
         ++(*pointer);
 
-        node = create_node(OP, DEG, node, get_transc(pointer));
+        node = create_node(DEG, node, get_transc(pointer));
 
         RETURN_NULLPTR_IF(node        == nullptr);
         RETURN_NULLPTR_IF(node->right == nullptr);

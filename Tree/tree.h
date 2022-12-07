@@ -71,18 +71,18 @@ Tree_node* create_empty_node(Tree_node *parent = nullptr, Tree_node *left  = nul
 Tree_node* create_orphan_node(Tree_node *left = nullptr, Tree_node *right = nullptr);
 
 
-Tree_node* create_node(Node_type type, char var, 
-                     Tree_node *left   = nullptr, 
-                     Tree_node *right  = nullptr);
+Tree_node* create_node(char var, 
+                      Tree_node *left   = nullptr, 
+                      Tree_node *right  = nullptr);
 
-Tree_node* create_node(Node_type type, int val, 
-                     Tree_node *left   = nullptr, 
-                     Tree_node *right  = nullptr);
+Tree_node* create_node(int val, 
+                      Tree_node *left   = nullptr, 
+                      Tree_node *right  = nullptr);
 
 
-Tree_node* create_node(Node_type type, Operations op, 
-                     Tree_node *left   = nullptr, 
-                     Tree_node *right  = nullptr);
+Tree_node* create_node(Operations op, 
+                      Tree_node *left   = nullptr, 
+                      Tree_node *right  = nullptr);
 
 
 void set_as_parent(Tree_node *node);

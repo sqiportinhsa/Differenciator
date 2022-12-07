@@ -66,36 +66,33 @@ Tree_node* create_orphan_node(Tree_node *left, Tree_node *right) {
 
 //------------- FILLING WITH DATA -------------//
 
-Tree_node* create_node(Node_type type, char var, 
-                      Tree_node *left, Tree_node *right) { //todo delete type cause its obvious
+Tree_node* create_node(char var, Tree_node *left, Tree_node *right) {
 
     Tree_node *node = create_orphan_node(left, right);
 
-    node->type = type;
+    node->type = VAR;
 
     node->data.var = var;
 
     return node;
 }
 
-Tree_node* create_node(Node_type type, int val, 
-                       Tree_node *left, Tree_node *right) {
+Tree_node* create_node(int val, Tree_node *left, Tree_node *right) {
 
     Tree_node *node = create_orphan_node(left, right);
 
-    node->type = type;
+    node->type = VAL;
 
     node->data.val = val;
 
     return node;
 }
 
-Tree_node* create_node(Node_type type, Operations op, 
-                       Tree_node *left, Tree_node *right) {
+Tree_node* create_node(Operations op, Tree_node *left, Tree_node *right) {
 
     Tree_node *node = create_orphan_node(left, right);
 
-    node->type = type;
+    node->type = OP;
 
     node->data.op = op;
 
