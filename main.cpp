@@ -1,5 +1,6 @@
 #include <stdio.h>
 #include <assert.h>
+#include <stdlib.h>
 
 #include "common.h"
 #include "Diff/diff.h"
@@ -25,6 +26,8 @@ int main(int argc, const char **argv) {
     close_latex();
 
     expr_dtor(&expr);
+
+    system("pdflatex latex_output.tex");
 
     return 0;
 }
