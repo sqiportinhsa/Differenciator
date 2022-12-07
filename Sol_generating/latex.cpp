@@ -170,7 +170,12 @@ static void latex_print_node(const Tree_node *node) {
 
     if (node->type == VAL) {
 
-        print_to_latex("%d", node->data.val);
+        if (node->data.val < 0) {
+            print_to_latex("(%d)", node->data.val);
+
+        } else {
+            print_to_latex("%d", node->data.val);
+        }
 
         return;
     }

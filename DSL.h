@@ -57,17 +57,29 @@
 //                                                                                                //
 //------------------------------------------------------------------------------------------------//
 
-#define SKIP_NEUTRAL_ELEMENT(checking, brother, elem)                              \
-        if (checking->type == VAL && checking->data.val == elem) {                 \
-        Tree_node *simplifyed = brother;                                           \
-                                                                                   \
-        latex_print_simplify(node, brother);                                       \
-                                                                                   \
-        free(checking);                                                            \
-        free(node);                                                                \
-                                                                                   \
-        return simplifyed;                                                         \
-    }
+#define SKIP_NEUTRAL_ELEMENT(checking, brother, elem)                              		\
+        if (checking->type == VAL && checking->data.val == elem) {                 	    \
+			Tree_node *simplifyed = brother;                                            \
+																					 	\
+			latex_print_simplify(node, brother);                                        \
+																						\
+			free(checking);                                                             \
+			free(node);                                                                 \
+																						\
+			return simplifyed;                                                          \
+    	}
+
+#define SUBTRACT_FROM_ZERO() \
+		if (node->left->type == VAL && node->left->data.val == 0) {                 	\
+			Tree_node *simplifyed = create_node(OP, MUL, node->right, Const(-1));       \
+																					 	\
+			latex_print_simplify(node, simplifyed);                                     \
+																						\
+			free(node->left);                                                           \
+			free(node);                                                                 \
+																						\
+			return simplifyed;                                                          \
+    	}
 
 #define REPLACE_TWO_VALUES(op_code, oper)                                                          \
         if (node->left->type == VAL && node->right->type == VAL) {                                 \

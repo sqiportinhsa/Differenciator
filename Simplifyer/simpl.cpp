@@ -12,7 +12,9 @@
 
 static Tree_node* simplify_subtree (Tree_node* node);
 
-static Tree_node* simplify_add_sub (Tree_node *node);
+static Tree_node* simplify_add     (Tree_node *node);
+
+static Tree_node* simplify_sub     (Tree_node *node);
 
 static Tree_node* simplify_mul     (Tree_node *node);
 
@@ -53,8 +55,11 @@ static Tree_node* simplify_subtree(Tree_node* node) {
     set_as_parent(node);
 
     switch (node->data.op) {
-        case ADD: case SUB:
-            return simplify_add_sub(node);
+        case ADD:
+            return simplify_add(node);
+
+        case SUB:
+            return simplify_sub(node);
 
         case MUL:
             return simplify_mul(node);
@@ -75,16 +80,29 @@ static Tree_node* simplify_subtree(Tree_node* node) {
     return node;
 }
 
-static Tree_node* simplify_add_sub(Tree_node *node) {
+static Tree_node* simplify_add(Tree_node *node) {
 
     assert(node != nullptr);
-    assert(node->data.op == ADD || node->data.op == SUB);
+    assert(node->data.op == ADD);
 
     SKIP_NEUTRAL_ELEMENT(node->left,  node->right, 0);
     SKIP_NEUTRAL_ELEMENT(node->right, node->left,  0);
 
     REPLACE_TWO_VALUES(ADD, +);
-    REPLACE_TWO_VALUES(SUB, -);
+
+    return node;
+}
+
+static Tree_node* simplify_sub(Tree_node *node) {
+
+    assert(node != nullptr);
+    assert(node->data.op == SUB);
+
+    SKIP_NEUTRAL_ELEMENT(node->right, node->left,  0);
+
+    REPLACE_TWO_VALUES(SUB, +);
+
+    SUBTRACT_FROM_ZERO();
 
     return node;
 }
