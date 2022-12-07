@@ -62,8 +62,8 @@ struct Tree {
 
 #define init_tree(tree) real_tree_init(tree, __FILE__, __PRETTY_FUNCTION__, __LINE__);
 
-
 int real_tree_init(Tree* tree, const char *file, const char *func, int line);
+
 
 Tree_node* create_empty_node(Tree_node *parent = nullptr, Tree_node *left  = nullptr, 
                                                     Tree_node *right = nullptr);
@@ -86,6 +86,8 @@ Tree_node* create_node(Operations op,
 
 
 void set_as_parent(Tree_node *node);
+
+int  count_nodes(const Tree_node *head);
 
 
 void free_node(Tree_node *node);

@@ -64,7 +64,6 @@ Tree_node* create_orphan_node(Tree_node *left, Tree_node *right) {
     return create_empty_node(nullptr, left, right);
 }
 
-//------------- FILLING WITH DATA -------------//
 
 Tree_node* create_node(char var, Tree_node *left, Tree_node *right) {
 
@@ -99,6 +98,8 @@ Tree_node* create_node(Operations op, Tree_node *left, Tree_node *right) {
     return node;
 }
 
+//----------------------------------- USEFUL FUNCTIONS -------------------------------------------//
+
 void set_as_parent(Tree_node *node) {
 
     if (node->left) {
@@ -110,6 +111,25 @@ void set_as_parent(Tree_node *node) {
 
         node->right->parent = node;
     }
+}
+
+int count_nodes(const Tree_node *head) {
+
+    assert(head != nullptr);
+
+    int number = 0;
+
+    if (head->left) {
+
+        number += count_nodes(head->left);
+    }
+
+    if (head->right) {
+
+        number += count_nodes(head->right);
+    }
+
+    return number;
 }
 
 
