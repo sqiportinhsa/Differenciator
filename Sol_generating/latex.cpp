@@ -151,6 +151,21 @@ void latex_print_diff(const Tree_node *orig, const Tree_node *diff) {
     print_to_latex("$$\n");
 }
 
+void latex_print_simplify(const Tree_node *orig, const Tree_node *simpl) {
+
+    latex_print_phrase();
+
+    print_to_latex("$$");
+
+    latex_print_node(orig);
+
+    print_to_latex(" = ");
+
+    latex_print_node(simpl);
+
+    print_to_latex("$$\n");
+}
+
 static void latex_print_node(const Tree_node *node) {
 
     if (node->type == VAL) {

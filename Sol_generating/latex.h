@@ -15,6 +15,8 @@ void latex_print_expr(Tree_node *head);
 
 void latex_print_diff(const Tree_node *orig, const Tree_node *diff);
 
+void latex_print_simplify(const Tree_node *orig, const Tree_node *simpl);
+
 void latex_print_phrase();
 
 void print_diff_introduction(Tree *tree);

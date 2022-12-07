@@ -61,7 +61,7 @@
         if (checking->type == VAL && checking->data.val == elem) {                 \
         Tree_node *simplifyed = brother;                                           \
                                                                                    \
-        latex_print_diff(node, brother);                                           \
+        latex_print_simplify(node, brother);                                       \
                                                                                    \
         free(checking);                                                            \
         free(node);                                                                \
@@ -73,7 +73,7 @@
         if (node->left->type == VAL && node->right->type == VAL) {                                 \
         	if (node->data.op == op_code) {                                                        \
 				Tree_node *new_node = Const(node->left->data.val oper node->right->data.val);      \
-				latex_print_diff(node, new_node);                                                  \
+				latex_print_simplify(node, new_node);                                              \
 				free_node(node);                                                                   \
 				return new_node;                                                                   \
         	}                                                                                      \
@@ -82,7 +82,7 @@
 #define REPLACE_VALUE_ON_ARG_TO(arg, value)               \
     	if (node->left->data.val == arg) {                \
 			Tree_node *new_node = Const(value);           \
-    	    latex_print_diff(node, new_node);             \
+    	    latex_print_simplify(node, new_node);         \
     	    free_node(node);                              \
     	    return new_node;                              \
     	}                                                 \
@@ -91,7 +91,7 @@
 #define MULTIPLY_BY_ZERO(checking)                        \
 		if (checking->data.val == 0) {                    \
 			Tree_node *new_node = Const(0);               \
-    	    latex_print_diff(node, new_node);             \
+    	    latex_print_simplify(node, new_node);         \
     	    free_node(node);                              \
     	    return new_node;                              \
     	}                                                 \
