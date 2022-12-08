@@ -108,7 +108,7 @@ static void print_head() {
 
 }
 
-void print_diff_introduction(Tree *tree) {
+void print_introduction(Tree *tree) {
     print_to_latex("\\section{Вступление}"
                    "Добрый день, дорогие друзья. \\sout{Вы продулись и откровенно неправильно "
                    "решили регион...} Вы хорошо проводили время весь семестр и пришло время сдавать"

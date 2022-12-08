@@ -19,4 +19,4 @@ void latex_print_simplify(const Tree_node *orig, const Tree_node *simpl);
 
 void latex_print_phrase();
 
-void print_diff_introduction(Tree *tree);
+void print_introduction(Tree *tree);
