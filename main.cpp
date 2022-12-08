@@ -17,7 +17,7 @@ int main(int argc, const char **argv) {
 
     init_latex(filenames.output);
 
-    print_diff_introduction(&expr.origin);
+    print_introduction(&expr.origin);
 
     diff_tree(&expr.origin, &expr.first_deg);
 
