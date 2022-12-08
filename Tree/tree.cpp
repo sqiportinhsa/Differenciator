@@ -49,6 +49,8 @@ Tree_node* create_empty_node(Tree_node *parent, Tree_node *left, Tree_node *righ
 
     node->parent = parent;
 
+    node->weight = 0;
+
     if (node->left) {
         node->left->parent = node;
     }
