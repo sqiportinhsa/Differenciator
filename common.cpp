@@ -69,6 +69,14 @@ void expr_dtor(Expression *expr) {
     tree_dtor(&expr->first_deg);
 }
 
+bool is_commutative(Operations op) {
+    if (op == ADD || op == MUL) {
+        return true;
+    }
+
+    return false;
+}
+
 static char* get_input(const char *filename) {
 
     size_t len = count_elements_in_file(filename);

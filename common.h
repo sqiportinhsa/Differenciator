@@ -19,4 +19,6 @@ CLArgs get_filenames(int argc, const char **argv);
 
 void expr_dtor(Expression *expr);
 
+bool is_commutative(Operations op);
+
 #endif
