@@ -51,7 +51,8 @@ struct Tree_node {
         char       var;
     } data;
 
-    size_t weight = 0;
+    int  weight  = 0;
+    int  replace = 0;
 };
 
 struct Tree {
