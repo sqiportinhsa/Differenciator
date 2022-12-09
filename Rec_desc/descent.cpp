@@ -27,7 +27,7 @@ static Tree_node* get_value         (const char **pointer);
 
 static Tree_node* get_variable      (const char **pointer);
 
-static Tree_node* get_from_brackets (const char **pointer);
+static Tree_node* get_primary_expression (const char **pointer);
 
 
 // GETTING FUNCTION
@@ -43,15 +43,15 @@ static Tree_node* get_deg           (const char **pointer);
 
 // GRAMMAR
 //
-//  Descent           ::= Get_add_and_sub, '\0';
-//  Get_add_and_sub   ::= Get_mul_and_div {[+, -]}*
-//  Get_mul_and_div   ::= Get_deg {[*, /]}*
-//  Get_deg           ::= Get_transc {[^]}*
-//  Get_transc        ::= [sin/cos/...] '(' Get_add_and_sub ')' | Get_from_brackets
-//  Get_from_brackets ::= '(' Get_add_sub ')' | Get_argument
-//  Get_argument      ::= Get_value | Get_variable
-//  Get_value         ::= ['0' - '9']+
-//  Get_variable      ::= ['a' - 'z', 'A' - 'Z']
+//  Descent                 ::= Get_add_and_sub, '\0';
+//  Get_add_and_sub         ::= Get_mul_and_div {[+, -]}*
+//  Get_mul_and_div         ::= Get_deg {[*, /]}*
+//  Get_deg                 ::= Get_transc {[^]}*
+//  Get_transc              ::= [sin/cos/...] '(' Get_add_and_sub ')' | Get_primary_expression
+//  Get_prinmary_expression ::= '(' Get_add_sub ')' | Get_argument
+//  Get_argument            ::= Get_value | Get_variable
+//  Get_value               ::= ['0' - '9']+
+//  Get_variable            ::= ['a' - 'z', 'A' - 'Z']
 //
 
 
@@ -172,7 +172,7 @@ static Tree_node* get_variable(const char **pointer) {
     return nullptr;
 }
 
-static Tree_node* get_from_brackets(const char **pointer) {
+static Tree_node* get_primary_expression(const char **pointer) {
 
     assert( pointer != nullptr);
     assert(*pointer != nullptr);
@@ -236,7 +236,7 @@ static Tree_node* get_transc(const char **pointer) {
     CHECK_IF_FUNC_IS("exp", EXP);
 
     if (!func_parsed) {
-        return get_from_brackets(pointer);
+        return get_primary_expression(pointer);
     }
 
     RETURN_NULLPTR_IF(**pointer != '(');
