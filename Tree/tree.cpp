@@ -101,6 +101,26 @@ Tree_node* create_node(Operations op, Tree_node *left, Tree_node *right) {
     return node;
 }
 
+Tree_node* copy_subtree(Tree_node *source) {
+
+    Tree_node *copy = create_empty_node();
+
+    copy->data = source->data;
+    copy->type = source->type;
+
+    if (source->left) {
+
+        copy->left  = copy_subtree(source->left);
+    }
+
+    if (source->right) {
+
+        copy->right = copy_subtree(source->right);
+    }
+
+    return copy;
+}
+
 //----------------------------------- USEFUL FUNCTIONS -------------------------------------------//
 
 void set_as_parent(Tree_node *node) {
@@ -120,7 +140,7 @@ int count_nodes(const Tree_node *head) {
 
     assert(head != nullptr);
 
-    int number = 0;
+    int number = 1;
 
     if (head->left) {
 

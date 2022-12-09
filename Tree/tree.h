@@ -87,6 +87,9 @@ Tree_node* create_node(Operations op,
                       Tree_node *right  = nullptr);
 
 
+Tree_node* copy_subtree(Tree_node *source);
+
+
 void set_as_parent(Tree_node *node);
 
 int  count_nodes(const Tree_node *head);
