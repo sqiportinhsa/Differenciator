@@ -15,7 +15,14 @@ FILE *tex_output = nullptr;
 
 static void print_head();
 
+
+static void latex_print_diff_transf  (const Transformation *transf);
+
+static void latex_print_simpl_transf (const Transformation *transf);
+
+
 static void latex_print_rep_var      (int number);
+
 
 static void latex_print_node         (const Tree_node *node);
 
@@ -187,7 +194,17 @@ static void latex_print_diff_transf(const Transformation *transf) {
 //        SIMPLIFYING         //
 //---------------------------//
 
-void latex_print_simpl_transf(const Transformation *transf) {
+void latex_print_simplifying(const Transformation *transfs, int size) {
+
+    for (int i = 0; i < size; ++i) {
+
+        latex_print_simpl_transf(&transfs[i]);
+    }
+}
+
+//---------------------------//
+
+static void latex_print_simpl_transf(const Transformation *transf) {
 
     latex_print_phrase();
 
@@ -245,22 +262,22 @@ static void latex_print_rep_var(int number) {
 
 static void latex_print_node(const Tree_node *node) {
 
-    if (node->type == VAL) {
+    if (node->replace != 0) {
+        latex_print_rep_var(node->replace);
+        return;
+    }
 
+    if (node->type == VAL) {
         if (node->data.val < 0) {
             print_to_latex("(%d)", node->data.val);
-
         } else {
-            print_to_latex("%d", node->data.val);
+            print_to_latex( "%d" , node->data.val);
         }
-
         return;
     }
 
     if (node->type == VAR) {
-
         print_to_latex("%c", node->data.var);
-
         return;
     } 
 
