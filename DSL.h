@@ -59,27 +59,30 @@
 
 #define SKIP_NEUTRAL_ELEMENT(checking, brother, elem)                              		\
         if (checking->type == VAL && checking->data.val == elem) {                 	    \
-			Tree_node *simplifyed = brother;                                            \
+			Tree_node *simplifyed = copy_subtree(brother);                              \
 																					 	\
 			save_transf(checking, simplifyed, transf);                                  \
+			free_node(node);                                                            \
 																						\
 			return simplifyed;                                                          \
     	}
 
-#define SUBTRACT_FROM_ZERO()                                                            \
-		if (node->left->type == VAL && node->left->data.val == 0) {                 	\
-			Tree_node *simplifyed = create_node(MUL, node->right, Const(-1));       	\
-																					 	\
-			save_transf(node, simplifyed, transf);                                      \
-																						\
-			return simplifyed;                                                          \
-    	}
+#define SUBTRACT_FROM_ZERO()                                                                  \
+		if (node->left->type == VAL && node->left->data.val == 0) {                 	      \
+			Tree_node *simplifyed = create_node(MUL, copy_subtree(node->right), Const(-1));   \
+																					 	      \
+			save_transf(node, simplifyed, transf);                                            \
+			free_node(node);                                                                  \
+																						      \
+			return simplifyed;                                                                \
+    	}      
 
 #define REPLACE_TWO_VALUES(op_code, oper)                                                          \
         if (node->left->type == VAL && node->right->type == VAL) {                                 \
         	if (node->data.op == op_code) {                                                        \
 				Tree_node *new_node = Const(node->left->data.val oper node->right->data.val);      \
 				save_transf(node, new_node, transf);                                               \
+				free_node(node);                                                                   \
 				return new_node;                                                                   \
         	}                                                                                      \
     	}
@@ -88,6 +91,7 @@
     	if (node->left->data.val == arg) {                \
 			Tree_node *new_node = Const(value);           \
 			save_transf(node, new_node, transf);          \
+			free_node(node);                              \
     	    return new_node;                              \
     	}                                                 \
     	return node;
@@ -96,6 +100,7 @@
 		if (checking->data.val == 0) {                    \
 			Tree_node *new_node = Const(0);               \
 			save_transf(node, new_node, transf);          \
+			free_node(node);                              \
     	    return new_node;                              \
     	}                                                 \
 
