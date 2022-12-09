@@ -13,6 +13,7 @@ FILE *tex_output = nullptr;
 
 static void print_head();
 
+static void latex_print_rep_var      (int number);
 
 static void latex_print_node         (const Tree_node *node);
 
@@ -136,34 +137,61 @@ void latex_print_expr(Tree_node *head) {
 
 }
 
-void latex_print_diff(const Tree_node *orig, const Tree_node *diff) {
+void latex_print_diff(const Transformation *transf) {
 
     latex_print_phrase();
 
     print_to_latex("$$\\frac{d}{dx}(");
 
-    latex_print_node(orig);
+    latex_print_node(transf->orig);
 
     print_to_latex(") = ");
 
-    latex_print_node(diff);
+    latex_print_node(transf->diff);
 
     print_to_latex("$$\n");
 }
 
-void latex_print_simplify(const Tree_node *orig, const Tree_node *simpl) {
+void latex_print_simplify(const Transformation *transf) {
 
     latex_print_phrase();
 
     print_to_latex("$$");
 
-    latex_print_node(orig);
+    latex_print_node(transf->orig);
 
     print_to_latex(" = ");
 
-    latex_print_node(simpl);
+    latex_print_node(transf->diff);
 
     print_to_latex("$$\n");
+}
+
+void latex_print_replacing(const Tree_node *node, int number) {
+
+    char letter = 'a' + number % ('z' - 'a' + 1);
+
+    int  letter_num = number / ('w' - 'a' + 1);
+
+    print_to_latex("$$");
+
+    latex_print_rep_var(number);
+
+    print_to_latex(" = ");
+
+    latex_print_node(node);
+
+    print_to_latex("$$");
+
+}
+
+static void latex_print_rep_var(int number) {
+
+    char letter = 'a' + number % ('z' - 'a' + 1);
+
+    int  letter_num = number / ('w' - 'a' + 1);
+
+    print_to_latex("%c_{%d}", letter, letter_num);
 }
 
 static void latex_print_node(const Tree_node *node) {

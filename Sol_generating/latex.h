@@ -1,5 +1,6 @@
 #include "../common.h"
 #include "../Tree/tree.h"
+#include "../Replace/replacer.h"
 
 void set_tex_output(FILE *output);
 
@@ -13,9 +14,11 @@ void close_latex();
 
 void latex_print_expr(Tree_node *head);
 
-void latex_print_diff(const Tree_node *orig, const Tree_node *diff);
+void latex_print_diff(const Transformation *transf);
 
-void latex_print_simplify(const Tree_node *orig, const Tree_node *simpl);
+void latex_print_simplify(const Transformation *transf);
+
+void latex_print_replacing(const Tree_node *node, int number);
 
 void latex_print_phrase();
 
