@@ -1,16 +1,18 @@
 #include <assert.h>
 #include <stdio.h>
 #include <ctype.h>
+#include <stdlib.h>
 
 #include "diff.h"
 #include "../Libs/file_reading.hpp"
 #include "../Tree/tree.h"
 #include "../Rec_desc/descent.h"
 #include "../Sol_generating/latex.h"
+#include "../Replace/replacer.h"
 
 #include "../DSL.h"
 
-static Tree_node* diff_node(Tree_node *source);
+static Tree_node* diff_node(Tree_node *source, Transformation **transf);
 
 static Tree_node* copy_subtree(Tree_node *source);
 
@@ -30,11 +32,22 @@ static Tree_node* copy_subtree(Tree_node *source);
 #endif
 
 
+#define memory_allocate(ptr, size, type)                                                      \
+        type *ptr = (type*) calloc(size, sizeof(type));                                       \
+        if (ptr == nullptr) {                                                                 \
+            printf("can't allocate memory: not enought free mem\n");                          \
+            return;                                                                           \
+        }
+
 void diff_tree(Tree *source, Tree *dest) {
 
     print_to_latex("\\section{Дифференцирование}");
 
-    dest->head->left = diff_node(source->head->left);
+    int transfs_amount = count_nodes(source->head);
+    
+    memory_allocate(transfs, transfs_amount, Transformation);
+
+    dest->head->left = diff_node(source->head->left, &transfs);
 
     print_to_latex("Таким образом получаем следующую производную:\n\n");
 
@@ -44,7 +57,9 @@ void diff_tree(Tree *source, Tree *dest) {
                    "переходим к следующему этапу работы с выражением\n\n");
 }
 
-static Tree_node* diff_node(Tree_node *source) {
+#undef memory_allocate
+
+static Tree_node* diff_node(Tree_node *source, Transformation **transf) {
 
     assert(source != nullptr);
 

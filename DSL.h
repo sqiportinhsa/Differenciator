@@ -3,19 +3,19 @@
 
 #define CS copy_subtree(source)
 
-#define DL diff_node(source->left)
-#define DR diff_node(source->right)
+#define DL diff_node(source->left,  transf)
+#define DR diff_node(source->right, transf)
 #define CL copy_subtree(source->left)
 #define CR copy_subtree(source->right)
 
 #define Diff_const                          \
-        dest = create_node(0);         \
-        latex_print_diff(source, dest);     \
+        dest = create_node(0);              \
+        save_transf(source, dest, transf);  \
         return dest;
 
 #define Diff_var                            \
-        dest = create_node(1);         \
-        latex_print_diff(source, dest);     \
+        dest = create_node(1);              \
+        save_transf(source, dest, transf);  \
         return dest;
 
 //------------------------------------------------------------------------------------------------//
@@ -48,7 +48,7 @@
 #define Ret_dest(calc_func)                 \
         dest = calc_func;                   \
         set_as_parent(dest);                \
-        latex_print_diff(source, dest);     \
+        save_transf(source, dest, transf);  \
         return dest;
 
 //------------------------------------------------------------------------------------------------//
