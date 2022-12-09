@@ -9,7 +9,9 @@
 
 const char *latex_filename = "latex_output.tex";
 
+
 FILE *tex_output = nullptr;
+
 
 static void print_head();
 
@@ -30,7 +32,11 @@ static void latex_print_deg          (const Tree_node *node);
 static bool priority_lower_than_mul  (const Tree_node *node);
 
 
-//-------------------------- OUTPUT FUNCTIONS SECTION --------------------------------------------//
+//------------------------------------------------------------------------------------------------//
+//                                                                                                //
+//                                   WORK WITH OUTPUT FILE                                        //
+//                                                                                                //
+//------------------------------------------------------------------------------------------------//
 
 void set_tex_output(FILE *output) {
 
@@ -55,7 +61,11 @@ void latex_print_phrase() {
     print_to_latex("%s\n", Phrases[rand() % Phrases_num]);
 }
 
-//------------------------ PRINTING COMMON -------------------------------------------------------//
+//------------------------------------------------------------------------------------------------//
+//                                                                                                //
+//                                      PRINTING COMMON                                           //
+//                                                                                                //
+//------------------------------------------------------------------------------------------------//
 
 
 void init_latex(const char *filename) {
@@ -124,8 +134,15 @@ void print_introduction(Tree *tree) {
     latex_print_expr(tree->head->left);
 }
 
-//--------------------------------- PRINTING EXPRESSIONS -----------------------------------------//
+//------------------------------------------------------------------------------------------------//
+//                                                                                                //
+//                      PRINTING EXPRESSIONS AND TRANSFORMATIONS                                  //
+//                                                                                                //
+//------------------------------------------------------------------------------------------------//
 
+//-----------------------------//
+//       EXPRESSION           //
+//---------------------------//
 
 void latex_print_expr(Tree_node *head) {
 
@@ -137,7 +154,21 @@ void latex_print_expr(Tree_node *head) {
 
 }
 
-void latex_print_diff(const Transformation *transf) {
+//-----------------------------//
+//      DIFFERRENCIATION      //
+//---------------------------//
+
+void latex_print_differenciation(const Transformation *transfs, int size) {
+
+    for (int i = 0; i < size; ++i) {
+
+        latex_print_diff_transf(&transfs[i]);
+    }
+}
+
+//---------------------------//
+
+static void latex_print_diff_transf(const Transformation *transf) {
 
     latex_print_phrase();
 
@@ -152,7 +183,11 @@ void latex_print_diff(const Transformation *transf) {
     print_to_latex("$$\n");
 }
 
-void latex_print_simplify(const Transformation *transf) {
+//-----------------------------//
+//        SIMPLIFYING         //
+//---------------------------//
+
+void latex_print_simpl_transf(const Transformation *transf) {
 
     latex_print_phrase();
 
@@ -166,6 +201,11 @@ void latex_print_simplify(const Transformation *transf) {
 
     print_to_latex("$$\n");
 }
+
+
+//-----------------------------//
+//         REPLACING          //
+//---------------------------//
 
 void latex_print_replacing(const Tree_node *node, int number) {
 
@@ -185,6 +225,11 @@ void latex_print_replacing(const Tree_node *node, int number) {
 
 }
 
+
+//----------------------------------------------//
+//                 COMMON STATICS               //
+//----------------------------------------------//
+
 static void latex_print_rep_var(int number) {
 
     char letter = 'a' + number % ('z' - 'a' + 1);
@@ -193,6 +238,10 @@ static void latex_print_rep_var(int number) {
 
     print_to_latex("%c_{%d}", letter, letter_num);
 }
+
+//-----------------------------//
+//    HOST RPINTING NODES     //
+//---------------------------//
 
 static void latex_print_node(const Tree_node *node) {
 
@@ -242,6 +291,10 @@ static void latex_print_node(const Tree_node *node) {
     }
 }
 
+//-----------------------------//
+//    ADDITION, SUBTRACKING   //
+//---------------------------//
+
 static void latex_print_add_and_sub(const Tree_node *node) {
 
     assert(node != nullptr);
@@ -262,6 +315,10 @@ static void latex_print_add_and_sub(const Tree_node *node) {
 
     latex_print_node(node->right);
 }
+
+//-----------------------------//
+//        TRANSCEDENT         //
+//---------------------------//
 
 static void latex_print_transc(const Tree_node *node) {
 
@@ -295,6 +352,10 @@ static void latex_print_transc(const Tree_node *node) {
     print_to_latex(")");
 }
 
+//-----------------------------//
+//          DIVISION          //
+//---------------------------//
+
 static void latex_print_div(const Tree_node *node) {
 
     assert(node != nullptr);
@@ -306,6 +367,10 @@ static void latex_print_div(const Tree_node *node) {
     latex_print_node(node->right);
     print_to_latex("}");
 }
+
+//-----------------------------//
+//      MULTIPLICATION        //
+//---------------------------//
 
 #define PRINT_NODE_WITH_BRACKETS(node)               \
         if (priority_lower_than_mul(node)) {         \
@@ -330,19 +395,7 @@ static void latex_print_mul(const Tree_node *node) {
 
 }
 
-#undef PRINT_NODE_WITH_BRACKETS
-
-static void latex_print_deg(const Tree_node *node) {
-
-    assert(node != nullptr);
-    assert(node->data.op == DEG);
-
-    print_to_latex("{");
-    latex_print_node(node->left);
-    print_to_latex("}^{");
-    latex_print_node(node->right);
-    print_to_latex("}");
-}
+//---------------------------//
 
 static bool priority_lower_than_mul(const Tree_node *node) {
 
@@ -359,4 +412,22 @@ static bool priority_lower_than_mul(const Tree_node *node) {
     }
 
     return false;
+}
+
+#undef PRINT_NODE_WITH_BRACKETS
+
+//-----------------------------//
+//           DEGREE           //
+//---------------------------//
+
+static void latex_print_deg(const Tree_node *node) {
+
+    assert(node != nullptr);
+    assert(node->data.op == DEG);
+
+    print_to_latex("{");
+    latex_print_node(node->left);
+    print_to_latex("}^{");
+    latex_print_node(node->right);
+    print_to_latex("}");
 }
