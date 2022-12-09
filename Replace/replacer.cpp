@@ -40,7 +40,7 @@ size_t calc_subtree_weight(Tree_node *head) {
 
     switch (head->type) {
         case OP:
-            head->weight = head->weight * 33 + head->data.op;
+            head->weight = head->weight * 33 + head->data.op + 1;
             break;
         case VAL:
             head->weight = head->weight * 33 + (int) log10(head->data.var) + 1;

@@ -1,3 +1,6 @@
+#ifndef REPLACER
+#define REPLACER
+
 #include "../Tree/tree.h"
 #include "../common.h"
 
@@ -15,3 +18,5 @@ bool   compare_subtrees(const Tree_node *head1, const Tree_node *head2);
 int    make_replacings(Tree_node *head, Tree_node *node);
 
 void   replace_same_in_subtree(const Tree_node *source, Tree_node *subtree);
+
+#endif
