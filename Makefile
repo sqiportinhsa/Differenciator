@@ -17,8 +17,8 @@ folders:
 graphs_clean:
 	find . -name "*.png" -delete
 
-$(DIFF): obj/diff.o obj/tree.o obj/file_reading.o obj/logging.o obj/main.o obj/descent.o obj/common.o obj/latex.o obj/simpl.o
-	g++ obj/main.o obj/diff.o obj/tree.o obj/file_reading.o obj/logging.o obj/common.o obj/descent.o obj/latex.o obj/simpl.o -o $(DIFF) $(CPPFLAGS)
+$(DIFF): obj/diff.o obj/tree.o obj/file_reading.o obj/logging.o obj/main.o obj/descent.o obj/common.o obj/latex.o obj/simpl.o obj/repl.o
+	g++ obj/main.o obj/diff.o obj/tree.o obj/file_reading.o obj/logging.o obj/common.o obj/descent.o obj/latex.o obj/simpl.o obj/repl.o -o $(DIFF) $(CPPFLAGS)
 
 
 obj/main.o: main.cpp obj/diff.o
@@ -43,6 +43,9 @@ obj/descent.o: Rec_desc/descent.cpp Rec_desc/descent.h
 
 obj/simpl.o: Simplifyer/simpl.cpp Simplifyer/simpl.h
 	g++ -c Simplifyer/simpl.cpp -o obj/simpl.o $(CPPFLAGS)
+
+obj/repl.o:Replace/replacer.cpp Replace/replacer.h
+	g++ -c Replace/replacer.cpp -o obj/repl.o $(CPPFLAGS)
 
 
 obj/file_reading.o: Libs/file_reading.cpp Libs/file_reading.hpp
