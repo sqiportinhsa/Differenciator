@@ -3,20 +3,23 @@
 
 #include "replacer.h"
 #include "../common.h"
+#include "../Sol_generating/latex.h"
 
 const int Var_weight = 1;
 const int Max_weight = 10000;
 
 const int To_be_replaced = -1;
 
-void save_transf(Tree_node *orig, Tree_node *diff, Transformation *transf) {
+void save_transf(Tree_node *orig, Tree_node *diff, Transformation **transf) {
 
     assert(orig   != nullptr);
     assert(diff   != nullptr);
     assert(transf != nullptr);
 
-    transf->orig = orig;
-    transf->diff = diff;
+    (*transf)->orig = orig;
+    (*transf)->diff = diff;
+
+    ++(*transf);
 }
 
 size_t calc_subtree_weight(Tree_node *head) {
@@ -103,4 +106,50 @@ bool compare_subtrees(const Tree_node *head1, const Tree_node *head2) {
     return (compare_subtrees(head1->left,  head2->left) && 
             compare_subtrees(head1->right, head2->right));
 
+}
+
+int make_replacings(Tree_node *head, Tree_node *node) {
+
+    assert(head != nullptr && node != nullptr);
+
+    static int variable_counter = 0;
+
+    if (node->replace == To_be_replaced) {
+        node->replace = variable_counter;
+
+        ++variable_counter;
+
+        latex_print_replacing(node, variable_counter);
+
+        replace_same_in_subtree(node, head);
+    }
+
+    if (node->left) {
+        make_replacings(head, node->left);
+    }
+
+    if (node->right) {
+        make_replacings(head, node->right);
+    }
+
+    return variable_counter;
+}
+
+void replace_same_in_subtree(const Tree_node *source, Tree_node *subtree) {
+
+    assert(source != nullptr && subtree != nullptr);
+
+    if (subtree->weight == source->weight) {
+        if (compare_subtrees(subtree, source)) {
+            subtree->replace = source->replace;
+        }
+    }
+
+    if (subtree->left) {
+        replace_same_in_subtree(source, subtree);
+    }
+
+    if (subtree->right) {
+        replace_same_in_subtree(source, subtree);
+    }
 }
