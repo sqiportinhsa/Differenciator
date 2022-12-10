@@ -236,6 +236,7 @@ static Tree_node* get_transc(const char **pointer) {
     CHECK_IF_FUNC_IS("exp", EXP);
 
     if (!func_parsed) {
+        free_node(node);
         return get_primary_expression(pointer);
     }
 
