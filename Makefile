@@ -16,6 +16,7 @@ folders:
 
 graphs_clean:
 	find . -name "*.png" -delete
+	find . -name "*.dot" -delete
 
 $(DIFF): obj/diff.o obj/tree.o obj/file_reading.o obj/logging.o obj/main.o obj/descent.o obj/common.o obj/latex.o obj/simpl.o obj/repl.o
 	g++ obj/main.o obj/diff.o obj/tree.o obj/file_reading.o obj/logging.o obj/common.o obj/descent.o obj/latex.o obj/simpl.o obj/repl.o -o $(DIFF) $(CPPFLAGS)
