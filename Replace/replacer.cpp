@@ -64,7 +64,7 @@ static size_t calc_subtree_weight(Tree_node *head) {
             head->weight = head->weight + head->data.op + 1;
             break;
         case VAL:
-            head->weight = head->weight + (int) log10(head->data.var) + 1;
+            head->weight = head->weight + (int) log10(abs(head->data.var) + 1) + 1;
             break;
         case VAR:
             head->weight = head->weight + Var_weight;
