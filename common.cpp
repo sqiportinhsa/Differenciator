@@ -39,8 +39,6 @@ bool init_expression(Expression *expr, const char *input) {
 
     expr->first_deg.head = create_orphan_node();
 
-    expr->first_deg.head->left = create_empty_node(expr->first_deg.head);
-
     return true;
 }
 
