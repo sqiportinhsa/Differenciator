@@ -166,6 +166,8 @@ int count_nodes(const Tree_node *head) {
 void tree_dtor(Tree *tree) {
     assert(tree != nullptr);
 
+    dump_tree(tree, "tree before death");
+
     free(tree->logs);
     
     free_node(tree->head);
@@ -193,16 +195,16 @@ void free_node(Tree_node *node) {
         fprintf(code_output, format, ##__VA_ARGS__);
 
 #define Print_val_node(node)                                                                       \
-        Print_code("node%p [label=\"{type: %s | val: %d}\",fillcolor=\"%s\",color=\"%s\"];\n",    \
-                                     node, Data_is_val, node->data.val, FILL__COLOR, FRAME_COLOR);
+        Print_code("node%p [label=\"{type: %s | val: %d | ptr: %p}\",fillcolor=\"%s\",color=\"%s\"];\n",    \
+                                     node, Data_is_val, node->data.val, node, FILL__COLOR, FRAME_COLOR);
 
 #define Print_var_node(node)                                                                       \
-        Print_code("node%p [label=\"{type: %s | var: %c}\",fillcolor=\"%s\",color=\"%s\"];\n",     \
-                                     node, Data_is_var, node->data.var, FILL__COLOR, FRAME_COLOR);
+        Print_code("node%p [label=\"{type: %s | var: %c | ptr: %p}\",fillcolor=\"%s\",color=\"%s\"];\n",     \
+                                     node, Data_is_var, node->data.var, node, FILL__COLOR, FRAME_COLOR);
 
 #define Print_op__node(node)                                                                       \
-        Print_code("node%p [label=\"{type: %s | op:  %d}\",fillcolor=\"%s\",color=\"%s\"];\n",     \
-                                     node, Data_is_op,  node->data.op,  FILL__COLOR, FRAME_COLOR);
+        Print_code("node%p [label=\"{type: %s | op:  %d | ptr: %p}\",fillcolor=\"%s\",color=\"%s\"];\n",     \
+                                     node, Data_is_op,  node->data.op, node,  FILL__COLOR, FRAME_COLOR);
 
 #define Print_head_node(node)\
         Print_code("node%p [label=\"{head node}\",fillcolor=\"%s\",color=\"%s\"];\n",     \

@@ -30,12 +30,12 @@ enum Operations {
     SUB,
     MUL,
     DIV,
+    DEG,
     COS,
     SIN,
     TAN,
     CTG,
     LOG,
-    DEG,
     EXP,
 };
 
