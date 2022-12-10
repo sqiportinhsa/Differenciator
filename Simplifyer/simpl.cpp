@@ -10,19 +10,19 @@
 #include "../DSL.h"
 
 
-static Tree_node* simplify_subtree (Tree_node* node, Transformation **transf);
+static Tree_node* simplify_subtree (Tree_node* node, Transformations *transf);
 
-static Tree_node* simplify_add     (Tree_node *node, Transformation **transf);
+static Tree_node* simplify_add     (Tree_node *node, Transformations *transf);
 
-static Tree_node* simplify_sub     (Tree_node *node, Transformation **transf);
+static Tree_node* simplify_sub     (Tree_node *node, Transformations *transf);
 
-static Tree_node* simplify_mul     (Tree_node *node, Transformation **transf);
+static Tree_node* simplify_mul     (Tree_node *node, Transformations *transf);
 
-static Tree_node* simplify_deg     (Tree_node *node, Transformation **transf);
+static Tree_node* simplify_deg     (Tree_node *node, Transformations *transf);
 
 
 #define memory_allocate(ptr, size, type)                                                      \
-        type *ptr = (type*) calloc(size, sizeof(type));                                       \
+        ptr = (type*) calloc(size, sizeof(type));                                             \
         if (ptr == nullptr) {                                                                 \
             printf("can't allocate memory: not enought free mem\n");                          \
             return;                                                                           \
@@ -37,14 +37,21 @@ void simplify_tree(Tree *tree) {
                    "останется лишь наблюдать за этим прекрасным процессом. Приступим:\n\n");
 
     int transfs_amount = count_nodes(tree->head);
+
+    Transformations transfs = {};
     
-    memory_allocate(transfs, transfs_amount, Transformation);
+    memory_allocate(transfs.orig, transfs_amount, Tree_node*);
+    memory_allocate(transfs.diff, transfs_amount, Tree_node*);
 
     tree->head->left = simplify_subtree(tree->head->left, &transfs);
 
+    make_replacings(tree);
+
     set_as_parent(tree->head->left);
 
-    latex_print_simplifying(transfs, transfs_amount);
+    latex_print_simplifying(&transfs, transfs_amount);
+
+    free_transfs(&transfs);
 
     print_to_latex("Объединяя вышесказанное получим \\sout{неуд за таску} производную в упрощенном "
                    "виде:\n\n");
@@ -54,7 +61,7 @@ void simplify_tree(Tree *tree) {
 
 #undef memory_allocate
 
-static Tree_node* simplify_subtree(Tree_node* node, Transformation **transf) {
+static Tree_node* simplify_subtree(Tree_node* node, Transformations *transf) {
     if (node->left) {
         if (node->left->type == OP) {
             node->left = simplify_subtree(node->left, transf);
@@ -95,7 +102,7 @@ static Tree_node* simplify_subtree(Tree_node* node, Transformation **transf) {
     return node;
 }
 
-static Tree_node* simplify_add(Tree_node *node, Transformation **transf) {
+static Tree_node* simplify_add(Tree_node *node, Transformations *transf) {
 
     assert(node != nullptr);
     assert(node->data.op == ADD);
@@ -108,7 +115,7 @@ static Tree_node* simplify_add(Tree_node *node, Transformation **transf) {
     return node;
 }
 
-static Tree_node* simplify_sub(Tree_node *node, Transformation **transf) {
+static Tree_node* simplify_sub(Tree_node *node, Transformations *transf) {
 
     assert(node != nullptr);
     assert(node->data.op == SUB);
@@ -122,7 +129,7 @@ static Tree_node* simplify_sub(Tree_node *node, Transformation **transf) {
     return node;
 }
 
-static Tree_node* simplify_mul(Tree_node *node, Transformation **transf) {
+static Tree_node* simplify_mul(Tree_node *node, Transformations *transf) {
 
     assert(node != nullptr);
     assert(node->data.op == MUL);
@@ -138,7 +145,7 @@ static Tree_node* simplify_mul(Tree_node *node, Transformation **transf) {
     return node;
 }
 
-static Tree_node* simplify_deg(Tree_node *node, Transformation **transf) {
+static Tree_node* simplify_deg(Tree_node *node, Transformations *transf) {
 
     assert(node != nullptr);
     assert(node->data.op == DEG);
