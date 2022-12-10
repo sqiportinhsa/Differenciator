@@ -17,9 +17,9 @@ void close_latex();
 
 void latex_print_expr(Tree_node *head);
 
-void latex_print_differenciation (const Transformation *transfs, int size);
+void latex_print_differenciation (const Transformations *transfs, int size);
 
-void latex_print_simplifying     (const Transformation *transfs, int size);
+void latex_print_simplifying     (const Transformations *transfs, int size);
 
 void latex_print_replacing(const Tree_node *node, int number);
 

@@ -16,24 +16,16 @@ FILE *tex_output = nullptr;
 static void print_head();
 
 
-static void latex_print_diff_transf  (const Transformation *transf);
-
-static void latex_print_simpl_transf (const Transformation *transf);
-
+static void latex_print_diff_transf  (const Tree_node *orig,   const Tree_node *diff);
+static void latex_print_simpl_transf (const Tree_node *before, const Tree_node *after);
 
 static void latex_print_rep_var      (int number);
 
-
-static void latex_print_node         (const Tree_node *node);
-
+static void latex_print_node         (const Tree_node *node, bool replace = true);
 static void latex_print_add_and_sub  (const Tree_node *node);
-
 static void latex_print_transc       (const Tree_node *node);
-
 static void latex_print_div          (const Tree_node *node);
-        
 static void latex_print_mul          (const Tree_node *node);
-        
 static void latex_print_deg          (const Tree_node *node);
 
 static bool priority_lower_than_mul  (const Tree_node *node);
@@ -165,27 +157,27 @@ void latex_print_expr(Tree_node *head) {
 //      DIFFERRENCIATION      //
 //---------------------------//
 
-void latex_print_differenciation(const Transformation *transfs, int size) {
+void latex_print_differenciation(const Transformations *transfs, int size) {    
 
-    for (int i = 0; i < size; ++i) {
+    for (int i = 0; i < transfs->index; ++i) {
 
-        latex_print_diff_transf(&transfs[i]);
+        latex_print_diff_transf(transfs->orig[i], transfs->diff[i]);
     }
 }
 
 //---------------------------//
 
-static void latex_print_diff_transf(const Transformation *transf) {
+static void latex_print_diff_transf(const Tree_node *orig, const Tree_node *diff) {
 
     latex_print_phrase();
 
     print_to_latex("$$\\frac{d}{dx}(");
 
-    latex_print_node(transf->orig);
+    latex_print_node(orig);
 
     print_to_latex(") = ");
 
-    latex_print_node(transf->diff);
+    latex_print_node(diff);
 
     print_to_latex("$$\n");
 }
@@ -194,27 +186,27 @@ static void latex_print_diff_transf(const Transformation *transf) {
 //        SIMPLIFYING         //
 //---------------------------//
 
-void latex_print_simplifying(const Transformation *transfs, int size) {
+void latex_print_simplifying(const Transformations *transfs, int size) {
 
-    for (int i = 0; i < size; ++i) {
+    for (int i = 0; i < transfs->index; ++i) {
 
-        latex_print_simpl_transf(&transfs[i]);
+        latex_print_simpl_transf(transfs->orig[i], transfs->diff[i]);
     }
 }
 
 //---------------------------//
 
-static void latex_print_simpl_transf(const Transformation *transf) {
+static void latex_print_simpl_transf(const Tree_node *before, const Tree_node *after) {
 
     latex_print_phrase();
 
     print_to_latex("$$");
 
-    latex_print_node(transf->orig);
+    latex_print_node(before);
 
     print_to_latex(" = ");
 
-    latex_print_node(transf->diff);
+    latex_print_node(after);
 
     print_to_latex("$$\n");
 }
@@ -226,17 +218,13 @@ static void latex_print_simpl_transf(const Transformation *transf) {
 
 void latex_print_replacing(const Tree_node *node, int number) {
 
-    char letter = 'a' + number % ('z' - 'a' + 1);
-
-    int  letter_num = number / ('w' - 'a' + 1);
-
     print_to_latex("$$");
 
     latex_print_rep_var(number);
 
     print_to_latex(" = ");
 
-    latex_print_node(node);
+    latex_print_node(node, false);
 
     print_to_latex("$$");
 
@@ -249,7 +237,7 @@ void latex_print_replacing(const Tree_node *node, int number) {
 
 static void latex_print_rep_var(int number) {
 
-    char letter = 'a' + number % ('z' - 'a' + 1);
+    char letter = 'a' + number % ('w' - 'a' + 1);
 
     int  letter_num = number / ('w' - 'a' + 1);
 
@@ -260,9 +248,9 @@ static void latex_print_rep_var(int number) {
 //    HOST RPINTING NODES     //
 //---------------------------//
 
-static void latex_print_node(const Tree_node *node) {
+static void latex_print_node(const Tree_node *node, bool replace) {
 
-    if (node->replace != 0) {
+    if (node->replace != 0 && replace) {
         latex_print_rep_var(node->replace);
         return;
     }
