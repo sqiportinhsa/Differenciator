@@ -4,19 +4,17 @@
 #include "../Tree/tree.h"
 #include "../common.h"
 
-struct Transformation {
-    Tree_node* orig = nullptr;
-    Tree_node* diff = nullptr;
+struct Transformations {
+    Tree_node** orig = nullptr;
+    Tree_node** diff = nullptr;
+
+    int index = 0;
 };
 
-void   save_transf(Tree_node *orig, Tree_node *diff, Transformation **transf);
+void save_transf(Tree_node *orig, Tree_node *diff, Transformations *transf) ;
 
-size_t calc_subtree_weight(Tree_node *head);
+void make_replacings(Tree *tree1, Tree *tree2 = nullptr);
 
-bool   compare_subtrees(const Tree_node *head1, const Tree_node *head2);
-
-int    make_replacings(Tree_node *head, Tree_node *node);
-
-void   replace_same_in_subtree(const Tree_node *source, Tree_node *subtree);
+void free_transfs(Transformations *transfs);
 
 #endif

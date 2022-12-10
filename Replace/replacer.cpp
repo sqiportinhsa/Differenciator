@@ -6,29 +6,50 @@
 #include "../Sol_generating/latex.h"
 
 const int Var_weight = 1;
-const int Max_weight = 10000;
+const int Max_weight = 10;
 
 const int To_be_replaced = -1;
 
-void save_transf(Tree_node *orig, Tree_node *diff, Transformation **transf) {
+
+
+static size_t calc_subtree_weight(Tree_node *head);
+
+static bool   compare_subtrees(const Tree_node *head1, const Tree_node *head2);
+
+static int replace_node_in_trees(Tree_node *node, Tree *tree1, Tree *tree2);
+
+static void   replace_same_as_in(const Tree_node *source, Tree_node *subtree);
+
+
+
+void save_transf(Tree_node *orig, Tree_node *diff, Transformations *transf) {
 
     assert(orig   != nullptr);
     assert(diff   != nullptr);
     assert(transf != nullptr);
 
-    (*transf)->orig = orig;
-    (*transf)->diff = diff;
+    transf->orig[transf->index] = copy_subtree(orig);
+    transf->diff[transf->index] = copy_subtree(diff);
 
-    ++(*transf);
+    ++(transf->index);
 }
 
-size_t calc_subtree_weight(Tree_node *head) {
+#define DO_IF(func, condition) \
+        if (condition)         \
+            func;
+
+void make_replacings(Tree *orig, Tree *diff) {
+
+    DO_IF(calc_subtree_weight(orig->head->left), orig != nullptr);
+    DO_IF(calc_subtree_weight(diff->head->left), diff != nullptr);
+
+    DO_IF(replace_node_in_trees(orig->head->left, orig, diff), orig != nullptr);
+    DO_IF(replace_node_in_trees(diff->head->left, orig, diff), diff != nullptr);
+}
+
+static size_t calc_subtree_weight(Tree_node *head) {
 
     assert(head != nullptr);
-
-    if (head->weight != 0) {
-        return head->weight;
-    }
 
     if (head->left) {
         head->weight += calc_subtree_weight(head->left);
@@ -40,13 +61,13 @@ size_t calc_subtree_weight(Tree_node *head) {
 
     switch (head->type) {
         case OP:
-            head->weight = head->weight * 33 + head->data.op + 1;
+            head->weight = head->weight + head->data.op + 1;
             break;
         case VAL:
-            head->weight = head->weight * 33 + (int) log10(head->data.var) + 1;
+            head->weight = head->weight + (int) log10(head->data.var) + 1;
             break;
         case VAR:
-            head->weight = head->weight * 33 + Var_weight;
+            head->weight = head->weight + Var_weight;
             break;
         default:
             break;
@@ -60,7 +81,7 @@ size_t calc_subtree_weight(Tree_node *head) {
     return head->weight;
 }
 
-bool compare_subtrees(const Tree_node *head1, const Tree_node *head2) {
+static bool compare_subtrees(const Tree_node *head1, const Tree_node *head2) {
 
     if (head1 == nullptr) {
         if (head2 == nullptr) {
@@ -95,7 +116,6 @@ bool compare_subtrees(const Tree_node *head1, const Tree_node *head2) {
     }
 
     if (is_commutative(head1->data.op)) {
-
         if (compare_subtrees(head1->left,  head2->right) && 
             compare_subtrees(head1->right, head2->left)) {
 
@@ -108,34 +128,35 @@ bool compare_subtrees(const Tree_node *head1, const Tree_node *head2) {
 
 }
 
-int make_replacings(Tree_node *head, Tree_node *node) {
+static int replace_node_in_trees(Tree_node *node, Tree *tree1, Tree *tree2) {
 
-    assert(head != nullptr && node != nullptr);
+    assert(node != nullptr);
 
     static int variable_counter = 0;
+
+    if (node->left) {
+        replace_node_in_trees(node->left, tree1, tree2);
+    }
+
+    if (node->right) {
+        replace_node_in_trees(node->right, tree1, tree2);
+    }
 
     if (node->replace == To_be_replaced) {
         node->replace = variable_counter;
 
         ++variable_counter;
 
-        latex_print_replacing(node, variable_counter);
+        latex_print_replacing(node, node->replace);
 
-        replace_same_in_subtree(node, head);
-    }
-
-    if (node->left) {
-        make_replacings(head, node->left);
-    }
-
-    if (node->right) {
-        make_replacings(head, node->right);
+        DO_IF(replace_same_as_in(node, tree1->head->left), tree1 != nullptr);
+        DO_IF(replace_same_as_in(node, tree2->head->left), tree2 != nullptr);
     }
 
     return variable_counter;
 }
 
-void replace_same_in_subtree(const Tree_node *source, Tree_node *subtree) {
+static void replace_same_as_in(const Tree_node *source, Tree_node *subtree) {
 
     assert(source != nullptr && subtree != nullptr);
 
@@ -146,10 +167,21 @@ void replace_same_in_subtree(const Tree_node *source, Tree_node *subtree) {
     }
 
     if (subtree->left) {
-        replace_same_in_subtree(source, subtree);
+        replace_same_as_in(source, subtree->left);
     }
 
     if (subtree->right) {
-        replace_same_in_subtree(source, subtree);
+        replace_same_as_in(source, subtree->right);
     }
+}
+
+void free_transfs(Transformations *transfs) {
+
+    for (int i = 0; i < transfs->index; ++i) {
+        free_node(transfs->orig[i]);
+        free_node(transfs->diff[i]);
+    }
+
+    free(transfs->orig);
+    free(transfs->diff);
 }
