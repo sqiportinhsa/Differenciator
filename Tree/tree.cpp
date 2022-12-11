@@ -166,8 +166,6 @@ int count_nodes(const Tree_node *head) {
 void tree_dtor(Tree *tree) {
     assert(tree != nullptr);
 
-    dump_tree(tree, "tree before death");
-
     free(tree->logs);
     
     free_node(tree->head);

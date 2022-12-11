@@ -37,8 +37,6 @@ void simplify_tree(Tree *tree) {
                    "останется лишь наблюдать за этим прекрасным процессом. Нам понадобятся "
                    "следующие замены:\n\n");
 
-    dump_tree(tree, "tree before simplifying\n");
-
     int transfs_amount = count_nodes(tree->head);
 
     Transformations transfs = {};

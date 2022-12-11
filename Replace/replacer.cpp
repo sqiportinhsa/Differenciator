@@ -204,9 +204,7 @@ static void replace_same_as_in(const Tree_node *source, Tree_node *subtree) {
 }
 
 static void replace_same_as_in(const Tree_node *node, Transformations *transfs) {
-
-    printf("%d\n", transfs->index);
-
+    
     for (int i = 0; i < transfs->index; ++i) {
         replace_same_as_in(node, transfs->orig[i]);
         replace_same_as_in(node, transfs->diff[i]);
