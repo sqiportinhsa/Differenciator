@@ -43,17 +43,13 @@ void diff_tree(Tree *source, Tree *dest) {
 
     int transfs_amount = count_nodes(source->head->left);
 
-    printf("\n\n\n%d\n\n\n", transfs_amount);
-
     Transformations transfs = {};
     
     memory_allocate(transfs.orig, transfs_amount, Tree_node*);
     memory_allocate(transfs.diff, transfs_amount, Tree_node*);
 
     dest->head->left = diff_node(source->head->left, &transfs);
-
     make_replacings(source, dest);
-
     latex_print_differenciation(&transfs, transfs_amount);
 
     free_transfs(&transfs);
