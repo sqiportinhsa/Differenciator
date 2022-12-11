@@ -22,6 +22,8 @@ static bool   compare_subtrees(const Tree_node *head1, const Tree_node *head2);
 static int    replace_node_everywhere(Tree_node *node, Transformations *transfs, Tree *tree1, 
                                                                                  Tree *tree2);
 
+static void   replace_nodes_in_transfs(Tree *tree, Transformations *transfs);
+
 static void   replace_same_as_in(const Tree_node *source, Tree_node       *subtree);
 static void   replace_same_as_in(const Tree_node *node,   Transformations *transfs);
 
@@ -48,7 +50,8 @@ void make_replacings(Tree *tree, Transformations *transfs) {
     calc_weights(tree);
     calc_weights(transfs);
 
-    replace_node_everywhere(tree->head->left, transfs, tree, nullptr);
+    replace_node_everywhere (tree->head->left, transfs, tree, nullptr);
+    replace_nodes_in_transfs(tree, transfs);
 }
 
 void make_replacings(Tree *orig, Tree *diff) {
@@ -159,7 +162,7 @@ static int replace_node_everywhere(Tree_node *node, Transformations *transfs, Tr
 
     assert(node != nullptr);
 
-    static int variable_counter = 0;
+    static int variable_counter = 1;
 
     if (node->left) {
         replace_node_everywhere(node->left,  transfs, tree1, tree2);
@@ -184,6 +187,14 @@ static int replace_node_everywhere(Tree_node *node, Transformations *transfs, Tr
     return variable_counter;
 }
 
+static void replace_nodes_in_transfs(Tree *tree, Transformations *transfs) {
+
+    for (int i = 0; i < transfs->index; ++i) {
+        replace_node_everywhere(transfs->orig[i], transfs, tree, nullptr);
+        replace_node_everywhere(transfs->diff[i], transfs, tree, nullptr);        
+    } 
+}
+
 static void replace_same_as_in(const Tree_node *source, Tree_node *subtree) {
 
     assert(source != nullptr && subtree != nullptr);
@@ -204,7 +215,7 @@ static void replace_same_as_in(const Tree_node *source, Tree_node *subtree) {
 }
 
 static void replace_same_as_in(const Tree_node *node, Transformations *transfs) {
-    
+
     for (int i = 0; i < transfs->index; ++i) {
         replace_same_as_in(node, transfs->orig[i]);
         replace_same_as_in(node, transfs->diff[i]);
