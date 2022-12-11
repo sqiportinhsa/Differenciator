@@ -34,7 +34,10 @@ void simplify_tree(Tree *tree) {
                    "Почему-то все любят, когда просто, и никто не любит, когда сложно. Однако, "
                    "усложнять внезапно оказывается легко, \\sout{вы можете видеть это на примере "
                    "моего кода}, а упрощать сложно. Поэтому я сам сделаю это для вас, а вам "
-                   "останется лишь наблюдать за этим прекрасным процессом. Приступим:\n\n");
+                   "останется лишь наблюдать за этим прекрасным процессом. Нам понадобятся "
+                   "следующие замены:\n\n");
+
+    dump_tree(tree, "tree before simplifying\n");
 
     int transfs_amount = count_nodes(tree->head);
 
@@ -44,14 +47,15 @@ void simplify_tree(Tree *tree) {
     memory_allocate(transfs.diff, transfs_amount, Tree_node*);
 
     tree->head->left = simplify_subtree(tree->head->left, &transfs);
-
-    make_replacings(tree);
-
     set_as_parent(tree->head->left);
+
+    make_replacings(tree, &transfs);
+
+    print_to_latex("Теперь произведем упрощение:\n\n");
 
     latex_print_simplifying(&transfs, transfs_amount);
 
-    free_transfs(&transfs);
+    free_transfs(&transfs, true);
 
     print_to_latex("Объединяя вышесказанное получим \\sout{неуд за таску} производную в упрощенном "
                    "виде:\n\n");

@@ -14,6 +14,9 @@ const int To_be_replaced = -1;
 
 static size_t calc_subtree_weight(Tree_node *head);
 
+static void   calc_weights(Transformations *tranfs);
+static void   calc_weights(Tree            *tree);
+
 static bool   compare_subtrees(const Tree_node *head1, const Tree_node *head2);
 
 static int    replace_node_everywhere(Tree_node *node, Transformations *transfs, Tree *tree1, 
@@ -42,15 +45,16 @@ void save_transf(Tree_node *orig, Tree_node *diff, Transformations *transf) {
 
 void make_replacings(Tree *tree, Transformations *transfs) {
 
-    calc_subtree_weight(tree->head->left);
+    calc_weights(tree);
+    calc_weights(transfs);
 
     replace_node_everywhere(tree->head->left, transfs, tree, nullptr);
 }
 
 void make_replacings(Tree *orig, Tree *diff) {
 
-    calc_subtree_weight(orig->head->left);
-    calc_subtree_weight(diff->head->left);
+    calc_weights(orig);
+    calc_weights(diff);
 
     replace_node_everywhere(orig->head->left, nullptr, orig, diff);
     replace_node_everywhere(diff->head->left, nullptr, orig, diff);
@@ -88,6 +92,19 @@ static size_t calc_subtree_weight(Tree_node *head) {
     }
 
     return head->weight;
+}
+
+static void calc_weights(Transformations *tranfs) {
+
+    for (int i = 0; i < tranfs->index; ++i) {
+        calc_subtree_weight(tranfs->orig[i]);
+        calc_subtree_weight(tranfs->diff[i]);
+    }
+}
+
+static void calc_weights(Tree *tree) {
+
+    calc_subtree_weight(tree->head->left);
 }
 
 static bool compare_subtrees(const Tree_node *head1, const Tree_node *head2) {
@@ -187,6 +204,8 @@ static void replace_same_as_in(const Tree_node *source, Tree_node *subtree) {
 }
 
 static void replace_same_as_in(const Tree_node *node, Transformations *transfs) {
+
+    printf("%d\n", transfs->index);
 
     for (int i = 0; i < transfs->index; ++i) {
         replace_same_as_in(node, transfs->orig[i]);
