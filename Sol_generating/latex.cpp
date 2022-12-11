@@ -147,7 +147,7 @@ void latex_print_expr(Tree_node *head) {
 
     print_to_latex("$$");
 
-    latex_print_node(head);
+    latex_print_node(head, false);
 
     print_to_latex("$$\n");
 
