@@ -96,6 +96,7 @@ static void print_head() {
                    "\\usepackage{floatflt}\n"
                    "\\usepackage{lipsum}\n"
                    "\\usepackage{euler}\n"
+                   "\\usepackage{coffeestains}\n"
                    "\n"
                    "\\oddsidemargin=0mm\n"
                    "\\textwidth=160mm\n"
