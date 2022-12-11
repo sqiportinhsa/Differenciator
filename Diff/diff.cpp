@@ -43,6 +43,8 @@ void diff_tree(Tree *source, Tree *dest) {
 
     int transfs_amount = count_nodes(source->head->left);
 
+    print_to_latex("Для начала проведем следующие замены:\n\n");
+
     Transformations transfs = {};
     
     memory_allocate(transfs.orig, transfs_amount, Tree_node*);
@@ -50,6 +52,9 @@ void diff_tree(Tree *source, Tree *dest) {
 
     dest->head->left = diff_node(source->head->left, &transfs);
     make_replacings(source, dest);
+
+    print_to_latex("После чего мы готовы приступить непосредственно к дифференцированию:\n\n");
+
     latex_print_differenciation(&transfs, transfs_amount);
 
     free_transfs(&transfs);
