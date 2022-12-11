@@ -6,7 +6,7 @@
 #include "../Sol_generating/latex.h"
 
 const int Var_weight = 1;
-const int Max_weight = 10;
+const int Max_weight = 30;
 
 const int To_be_replaced = -1;
 
@@ -16,9 +16,11 @@ static size_t calc_subtree_weight(Tree_node *head);
 
 static bool   compare_subtrees(const Tree_node *head1, const Tree_node *head2);
 
-static int replace_node_in_trees(Tree_node *node, Tree *tree1, Tree *tree2);
+static int    replace_node_everywhere(Tree_node *node, Transformations *transfs, Tree *tree1, 
+                                                                                 Tree *tree2);
 
-static void   replace_same_as_in(const Tree_node *source, Tree_node *subtree);
+static void   replace_same_as_in(const Tree_node *source, Tree_node       *subtree);
+static void   replace_same_as_in(const Tree_node *node,   Transformations *transfs);
 
 
 
@@ -28,8 +30,8 @@ void save_transf(Tree_node *orig, Tree_node *diff, Transformations *transf) {
     assert(diff   != nullptr);
     assert(transf != nullptr);
 
-    transf->orig[transf->index] = copy_subtree(orig);
-    transf->diff[transf->index] = copy_subtree(diff);
+    transf->orig[transf->index] = orig;
+    transf->diff[transf->index] = diff;
 
     ++(transf->index);
 }
@@ -38,13 +40,20 @@ void save_transf(Tree_node *orig, Tree_node *diff, Transformations *transf) {
         if (condition)         \
             func;
 
+void make_replacings(Tree *tree, Transformations *transfs) {
+
+    calc_subtree_weight(tree->head->left);
+
+    replace_node_everywhere(tree->head->left, transfs, tree, nullptr);
+}
+
 void make_replacings(Tree *orig, Tree *diff) {
 
-    DO_IF(calc_subtree_weight(orig->head->left), orig != nullptr);
-    DO_IF(calc_subtree_weight(diff->head->left), diff != nullptr);
+    calc_subtree_weight(orig->head->left);
+    calc_subtree_weight(diff->head->left);
 
-    DO_IF(replace_node_in_trees(orig->head->left, orig, diff), orig != nullptr);
-    DO_IF(replace_node_in_trees(diff->head->left, orig, diff), diff != nullptr);
+    replace_node_everywhere(orig->head->left, nullptr, orig, diff);
+    replace_node_everywhere(diff->head->left, nullptr, orig, diff);
 }
 
 static size_t calc_subtree_weight(Tree_node *head) {
@@ -128,18 +137,19 @@ static bool compare_subtrees(const Tree_node *head1, const Tree_node *head2) {
 
 }
 
-static int replace_node_in_trees(Tree_node *node, Tree *tree1, Tree *tree2) {
+static int replace_node_everywhere(Tree_node *node, Transformations *transfs, Tree *tree1, 
+                                                                              Tree *tree2) {
 
     assert(node != nullptr);
 
     static int variable_counter = 0;
 
     if (node->left) {
-        replace_node_in_trees(node->left, tree1, tree2);
+        replace_node_everywhere(node->left,  transfs, tree1, tree2);
     }
 
     if (node->right) {
-        replace_node_in_trees(node->right, tree1, tree2);
+        replace_node_everywhere(node->right, transfs, tree1, tree2);
     }
 
     if (node->replace == To_be_replaced) {
@@ -149,8 +159,9 @@ static int replace_node_in_trees(Tree_node *node, Tree *tree1, Tree *tree2) {
 
         latex_print_replacing(node, node->replace);
 
-        DO_IF(replace_same_as_in(node, tree1->head->left), tree1 != nullptr);
-        DO_IF(replace_same_as_in(node, tree2->head->left), tree2 != nullptr);
+        DO_IF(replace_same_as_in(node, tree1->head->left), tree1   != nullptr);
+        DO_IF(replace_same_as_in(node, tree2->head->left), tree2   != nullptr);
+        DO_IF(replace_same_as_in(node, transfs),           transfs != nullptr);
     }
 
     return variable_counter;
@@ -175,11 +186,21 @@ static void replace_same_as_in(const Tree_node *source, Tree_node *subtree) {
     }
 }
 
-void free_transfs(Transformations *transfs) {
+static void replace_same_as_in(const Tree_node *node, Transformations *transfs) {
 
     for (int i = 0; i < transfs->index; ++i) {
-        free_node(transfs->orig[i]);
-        free_node(transfs->diff[i]);
+        replace_same_as_in(node, transfs->orig[i]);
+        replace_same_as_in(node, transfs->diff[i]);
+    }
+}
+
+void free_transfs(Transformations *transfs, bool free_copies) {
+
+    if (free_copies) {
+        for (int i = 0; i < transfs->index; ++i) {
+            free_node(transfs->orig[i]);
+            free_node(transfs->diff[i]);
+        }
     }
 
     free(transfs->orig);

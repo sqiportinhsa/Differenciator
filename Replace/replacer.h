@@ -13,8 +13,9 @@ struct Transformations {
 
 void save_transf(Tree_node *orig, Tree_node *diff, Transformations *transf) ;
 
-void make_replacings(Tree *tree1, Tree *tree2 = nullptr);
+void make_replacings(Tree *tree1, Tree *tree2);
+void make_replacings(Tree *tree,  Transformations *transfs);
 
-void free_transfs(Transformations *transfs);
+void free_transfs(Transformations *transfs, bool free_copies = false);
 
 #endif
