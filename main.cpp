@@ -17,7 +17,10 @@ int main(int argc, const char **argv) {
 
     Expression expr = {};
 
-    init_expression(&expr, filenames.input);
+    if (!init_expression(&expr, filenames.input)) {
+        expr_dtor(&expr);
+        return -1;
+    }
 
     init_latex(filenames.output);
 
