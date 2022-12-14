@@ -14,6 +14,8 @@
 
 static Tree_node* diff_node(Tree_node *source, Transformations *transf);
 
+static Tree_node* diff_deg(Tree_node *source, Transformations *transf);
+
 
 //#define DEBUG
 
@@ -98,11 +100,37 @@ static Tree_node* diff_node(Tree_node *source, Transformations *transf) {
         case CTG: Ret_dest(Mul(Div(Const(1), Square(Sin(CL))), Mul(DL, Const(-1))));
         case EXP: Ret_dest(Mul(Exp(CL), DL));
         case LOG: Ret_dest(Div(DL, CL));
-        case DEG: Ret_dest(Mul(CS, Add(Div(Mul(CR, DL), CL), Mul(DR, Log(CL)))));
+
+        case DEG: return diff_deg(source, transf);
         
         default:
             assert(0 && "unexpected op case");
             break;
+    }
+
+    return nullptr;
+}
+
+static Tree_node* diff_deg(Tree_node *source, Transformations *transf) {
+    assert(source != nullptr && transf != nullptr);
+    assert(source->data.op == DEG);
+
+    Tree_node *dest = nullptr;
+
+    if (source->left->type == VAL) {
+        if (source->right->type == VAL) {
+            return Diff_const;
+
+        } else {
+            Ret_dest(Mul(Mul(CS, Log(CL)), DR));
+        }
+
+    } else {
+        if (source->right->type == VAL) {
+            Ret_dest(Mul(CR, Deg(CL, Sub(CR, Const(1)))));
+        } else {
+            Ret_dest(Mul(CS, Add(Div(Mul(CR, DL), CL), Mul(DR, Log(CL)))));
+        }
     }
 
     return nullptr;
