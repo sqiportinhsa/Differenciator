@@ -26,7 +26,7 @@ bool init_expression(Expression *expr, const char *input) {
     expr->text_origin = get_input(input);
 
     init_tree(&expr->origin);
-    init_tree(&expr->first_deg);
+    init_tree(&expr->derivative);
 
     expr->origin.head = create_orphan_node(); //fictive head element without data
 
@@ -37,7 +37,8 @@ bool init_expression(Expression *expr, const char *input) {
         return false;
     }
 
-    expr->first_deg.head = create_orphan_node();
+    expr->derivative.head = create_orphan_node();
+    expr->taylor.head     = create_orphan_node();
 
     return true;
 }
@@ -64,7 +65,7 @@ void expr_dtor(Expression *expr) {
     free(expr->text_origin);
 
     tree_dtor(&expr->origin);
-    tree_dtor(&expr->first_deg);
+    tree_dtor(&expr->derivative);
 }
 
 bool is_commutative(Operations op) {

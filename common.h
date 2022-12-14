@@ -9,7 +9,8 @@ static const char *default_output = "GDZ_matematica_5_class.pdf";
 
 struct Expression {
     Tree  origin          = {};
-    Tree  first_deg       = {};
+    Tree  derivative      = {};
+    Tree  taylor          = {};
     char* text_origin     = nullptr;
 };
 
