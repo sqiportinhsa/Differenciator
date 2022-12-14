@@ -13,6 +13,7 @@ struct Transformations {
 
 void save_transf(Tree_node *orig, Tree_node *diff, Transformations *transf) ;
 
+void make_replacings(Tree *tree);
 void make_replacings(Tree *tree1, Tree *tree2);
 void make_replacings(Tree *tree,  Transformations *transfs);
 
