@@ -15,12 +15,13 @@
 //                                                                                                //
 //------------------------------------------------------------------------------------------------//
 
-static Tree_node* simplify_subtree (Tree_node* node, Transformations *transf);
+static Tree_node* simplify_subtree (Tree_node *node, Transformations *transf);
 
 static Tree_node* simplify_add     (Tree_node *node, Transformations *transf);
 static Tree_node* simplify_sub     (Tree_node *node, Transformations *transf);
 static Tree_node* simplify_mul     (Tree_node *node, Transformations *transf);
 static Tree_node* simplify_deg     (Tree_node *node, Transformations *transf);
+
 
 static Tree_node* skip_neutral_element      (Transformations *transf, Tree_node *node, 
                                                                       Tree_node *brother);
@@ -92,7 +93,6 @@ void simplify_tree(Tree *tree) {
     make_replacings(tree, &transfs);
 
     print_to_latex("Теперь произведем упрощение:\n\n");
-
     latex_print_simplifying(&transfs, transfs_amount);
 
     free_transfs(&transfs, true);
@@ -105,7 +105,9 @@ void simplify_tree(Tree *tree) {
 
 #undef memory_allocate
 
-static Tree_node* simplify_subtree(Tree_node* node, Transformations *transf) {
+//---------------------------//
+
+static Tree_node* simplify_subtree(Tree_node *node, Transformations *transf) {
     if (node->left) {
         if (node->left->type == OP) {
             node->left = simplify_subtree(node->left, transf);
@@ -121,17 +123,13 @@ static Tree_node* simplify_subtree(Tree_node* node, Transformations *transf) {
     set_as_parent(node);
 
     switch (node->data.op) {
-        case ADD:
-            return simplify_add(node, transf);
+        case ADD: return simplify_add(node, transf);
 
-        case SUB:
-            return simplify_sub(node, transf);
+        case SUB: return simplify_sub(node, transf);
 
-        case MUL:
-            return simplify_mul(node, transf);
+        case MUL: return simplify_mul(node, transf);
 
-        case DEG:
-            return simplify_deg(node, transf);
+        case DEG: return simplify_deg(node, transf);
 
         case SIN: case TAN: case EXP: case DIV:
             REPLACE_VALUE_ON_ARG_TO(0, 0);
@@ -139,8 +137,7 @@ static Tree_node* simplify_subtree(Tree_node* node, Transformations *transf) {
         case COS: case CTG:
             REPLACE_VALUE_ON_ARG_TO(0, 1);
 
-        default:
-            break;
+        default: break;
     }
 
     return node;
@@ -151,6 +148,10 @@ static Tree_node* simplify_subtree(Tree_node* node, Transformations *transf) {
 //                                     SIMPLIFYING NODES                                          //
 //                                                                                                //
 //------------------------------------------------------------------------------------------------//
+
+//-----------------------------//
+//          ADDITION          //
+//---------------------------//
 
 static Tree_node* simplify_add(Tree_node *node, Transformations *transf) {
 
@@ -165,6 +166,10 @@ static Tree_node* simplify_add(Tree_node *node, Transformations *transf) {
     return node;
 }
 
+//-----------------------------//
+//        SUBTRACKING         //
+//---------------------------//
+
 static Tree_node* simplify_sub(Tree_node *node, Transformations *transf) {
 
     assert(node != nullptr);
@@ -178,6 +183,10 @@ static Tree_node* simplify_sub(Tree_node *node, Transformations *transf) {
 
     return node;
 }
+
+//-----------------------------//
+//      MULTIPLICATION        //
+//---------------------------//
 
 static Tree_node* simplify_mul(Tree_node *node, Transformations *transf) {
 
@@ -194,6 +203,10 @@ static Tree_node* simplify_mul(Tree_node *node, Transformations *transf) {
 
     return node;
 }
+
+//-----------------------------//
+//          DEGREE            //
+//---------------------------//
 
 static Tree_node* simplify_deg(Tree_node *node, Transformations *transf) {
 
@@ -224,6 +237,8 @@ static Tree_node* skip_neutral_element(Transformations *transf, Tree_node *node,
 	return simplifyed;
 }
 
+//---------------------------//
+
 static Tree_node* subtract_from_zero(Transformations *transf, Tree_node *node) {
 	Tree_node *simplifyed = create_node(MUL, copy_subtree(node->right), Const(-1));        
 																			 	           
@@ -232,6 +247,8 @@ static Tree_node* subtract_from_zero(Transformations *transf, Tree_node *node) {
 																				           
 	return simplifyed;
 }
+
+//---------------------------//
 
 static Tree_node* replace_two_values(Transformations *transf, Tree_node *node, int new_val) {
 	Tree_node *new_node = Const(new_val);
@@ -242,6 +259,8 @@ static Tree_node* replace_two_values(Transformations *transf, Tree_node *node, i
 	return new_node; 
 }
 
+//---------------------------//
+
 static Tree_node* replace_value_on_arg_to(Transformations *transf, Tree_node *node, int value) {
 	Tree_node *new_node = Const(value);
 
@@ -250,6 +269,8 @@ static Tree_node* replace_value_on_arg_to(Transformations *transf, Tree_node *no
 
     return new_node;                                                                                                                                               
 }
+
+//---------------------------//
 
 static Tree_node* multiply_by_zero(Transformations *transf, Tree_node *node) {
 	Tree_node *new_node = Const(0);         
