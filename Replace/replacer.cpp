@@ -11,6 +11,12 @@ const int Max_weight = 45;
 const int To_be_replaced = -1;
 
 
+//------------------------------------------------------------------------------------------------//
+//                                                                                                //
+//                              STATIC FUNCTIONS DECLARATION                                      //
+//                                                                                                //
+//------------------------------------------------------------------------------------------------//
+
 static size_t calc_subtree_weight(Tree_node *head);
 
 static void   calc_weights(Transformations *tranfs);
@@ -26,7 +32,15 @@ static void   replace_nodes_in_transfs(Tree *tree, Transformations *transfs);
 static void   replace_same_as_in(const Tree_node *source, Tree_node       *subtree);
 static void   replace_same_as_in(const Tree_node *node,   Transformations *transfs);
 
+//------------------------------------------------------------------------------------------------//
+//                                                                                                //
+//                                   EXTERNAL FUNCTIONS                                           //
+//                                                                                                //
+//------------------------------------------------------------------------------------------------//
 
+//---------------------------------------------//
+//      SAVING AND FREEING TRANSFORMATIONS     //
+//---------------------------------------------//
 
 void save_transf(Tree_node *orig, Tree_node *diff, Transformations *transf) {
 
@@ -39,6 +53,23 @@ void save_transf(Tree_node *orig, Tree_node *diff, Transformations *transf) {
 
     ++(transf->index);
 }
+
+void free_transfs(Transformations *transfs, bool free_copies) {
+
+    if (free_copies) {
+        for (int i = 0; i < transfs->index; ++i) {
+            free_node(transfs->orig[i]);
+            free_node(transfs->diff[i]);
+        }
+    }
+
+    free(transfs->orig);
+    free(transfs->diff);
+}
+
+//---------------------------------------------//
+//              MAKING REPLACINGS              //
+//---------------------------------------------//
 
 #define DO_IF(func, condition) \
         if (condition)         \
@@ -61,6 +92,12 @@ void make_replacings(Tree *orig, Tree *diff) {
     replace_node_everywhere(orig->head->left, nullptr, orig, diff);
     replace_node_everywhere(diff->head->left, nullptr, orig, diff);
 }
+
+//------------------------------------------------------------------------------------------------//
+//                                                                                                //
+//                                   WEIGHT CALCULATION                                           //
+//                                                                                                //
+//------------------------------------------------------------------------------------------------//
 
 static size_t calc_subtree_weight(Tree_node *head) {
 
@@ -109,52 +146,11 @@ static void calc_weights(Tree *tree) {
     calc_subtree_weight(tree->head->left);
 }
 
-static bool compare_subtrees(const Tree_node *head1, const Tree_node *head2) {
-
-    if (head1 == nullptr) {
-        if (head2 == nullptr) {
-            return true;
-        }
-        return false;
-
-    } else {
-        if (head2 == nullptr) {
-            return false;
-        }
-    }
-
-    if (head1->type != head2->type) {
-        return false;
-    }
-
-    switch (head1->type) {
-        case VAL:
-            return (head1->data.val == head2->data.val);
-
-        case VAR:
-            return (head1->data.var == head2->data.var);
-
-        case OP:
-            if (head1->data.op != head2->data.op) {
-                return false;
-            }
-            break;
-
-        default: break;
-    }
-
-    if (is_commutative(head1->data.op)) {
-        if (compare_subtrees(head1->left,  head2->right) && 
-            compare_subtrees(head1->right, head2->left)) {
-
-            return true;
-        }
-    }
-
-    return (compare_subtrees(head1->left,  head2->left) && 
-            compare_subtrees(head1->right, head2->right));
-
-}
+//------------------------------------------------------------------------------------------------//
+//                                                                                                //
+//                                         REPLACINGS                                             //
+//                                                                                                //
+//------------------------------------------------------------------------------------------------//
 
 static int replace_node_everywhere(Tree_node *node, Transformations *transfs, Tree *tree1, 
                                                                               Tree *tree2) {
@@ -221,15 +217,51 @@ static void replace_same_as_in(const Tree_node *node, Transformations *transfs) 
     }
 }
 
-void free_transfs(Transformations *transfs, bool free_copies) {
+//------------------------------------------------------------------------------------------------//
+//                                                                                                //
+//                                   COMPARING SUBTREES                                           //
+//                                                                                                //
+//------------------------------------------------------------------------------------------------//
 
-    if (free_copies) {
-        for (int i = 0; i < transfs->index; ++i) {
-            free_node(transfs->orig[i]);
-            free_node(transfs->diff[i]);
+static bool compare_subtrees(const Tree_node *head1, const Tree_node *head2) {
+
+    if (head1 == nullptr) {
+        if (head2 == nullptr) {
+            return true;
+        }
+        return false;
+
+    } else {
+        if (head2 == nullptr) {
+            return false;
         }
     }
 
-    free(transfs->orig);
-    free(transfs->diff);
+    if (head1->type != head2->type) {
+        return false;
+    }
+
+    switch (head1->type) {
+        case VAL: return (head1->data.val == head2->data.val);
+        case VAR: return (head1->data.var == head2->data.var);
+        case OP:
+            if (head1->data.op != head2->data.op) {
+                return false;
+            }
+            break;
+
+        default: break;
+    }
+
+    if (is_commutative(head1->data.op)) {
+        if (compare_subtrees(head1->left,  head2->right) && 
+            compare_subtrees(head1->right, head2->left)) {
+
+            return true;
+        }
+    }
+
+    return (compare_subtrees(head1->left,  head2->left) && 
+            compare_subtrees(head1->right, head2->right));
+
 }
