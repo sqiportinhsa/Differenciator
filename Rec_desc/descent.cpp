@@ -40,19 +40,20 @@ static Tree_node* get_mul_and_div   (const char **pointer);
 static Tree_node* get_deg           (const char **pointer);
 
 
-// GRAMMAR
-//
-//  Descent                 ::= Get_add_and_sub, '\0';
-//  Get_add_and_sub         ::= Get_mul_and_div {[+, -]}*
-//  Get_mul_and_div         ::= Get_deg {[*, /]}*
-//  Get_deg                 ::= Get_transc {[^]}*
-//  Get_transc              ::= [sin/cos/...] '(' Get_add_and_sub ')' | Get_primary_expression
-//  Get_prinmary_expression ::= '(' Get_add_sub ')' | Get_argument
-//  Get_argument            ::= Get_value | Get_variable
-//  Get_value               ::= ['0' - '9']+
-//  Get_variable            ::= ['a' - 'z', 'A' - 'Z']
-//
-
+//------------------------------------------------------------------------------------------------//
+//                                        GRAMMAR                                                 //
+//                                                                                                //
+//  Descent                 ::= Get_add_and_sub, '\0';                                            //
+//  Get_add_and_sub         ::= Get_mul_and_div {[+, -]}*                                         //
+//  Get_mul_and_div         ::= Get_deg {[*, /]}*                                                 //
+//  Get_deg                 ::= Get_transc {[^]}*                                                 //
+//  Get_transc              ::= [sin/cos/...] '(' Get_add_and_sub ')' | Get_primary_expression    //
+//  Get_primary_expression  ::= '(' Get_add_sub ')' | Get_argument                                //
+//  Get_argument            ::= Get_value | Get_variable                                          //
+//  Get_value               ::= ['0' - '9']+                                                      //
+//  Get_variable            ::= ['a' - 'z', 'A' - 'Z']                                            //
+//                                                                                                //
+//------------------------------------------------------------------------------------------------//
 
 #ifdef DEBUG
 
@@ -100,7 +101,7 @@ Tree_node* descent(const char *pointer) {
 
 //------------------------------------------------------------------------------------------------//
 //                                                                                                //
-//                              GETTING ARGUMENT (value/variblde)                                 //
+//                              GETTING ARGUMENT (value/varialbe)                                 //
 //                                                                                                //
 //------------------------------------------------------------------------------------------------//
 
@@ -111,6 +112,9 @@ Tree_node* descent(const char *pointer) {
             return node;             \
         }
 
+//-----------------------------//
+//        GET ARGUMENT        //
+//---------------------------//
 
 static Tree_node* get_argument(const char **pointer) {
     
@@ -125,6 +129,10 @@ static Tree_node* get_argument(const char **pointer) {
 
     return nullptr;
 }
+
+//-----------------------------//
+//          GET VALUE         //
+//---------------------------//
 
 static Tree_node* get_value(const char **pointer) {
 
@@ -152,6 +160,10 @@ static Tree_node* get_value(const char **pointer) {
 
 }
 
+//-----------------------------//
+//       GET VARIABLE         //
+//---------------------------//
+
 static Tree_node* get_variable(const char **pointer) {
 
     assert( pointer != nullptr);
@@ -170,6 +182,10 @@ static Tree_node* get_variable(const char **pointer) {
     
     return nullptr;
 }
+
+//-----------------------------//
+//   GET PRIMARY EXPRESSION   //
+//---------------------------//
 
 static Tree_node* get_primary_expression(const char **pointer) {
 
@@ -214,6 +230,10 @@ static Tree_node* get_primary_expression(const char **pointer) {
         }
 
 
+//-----------------------------//
+//      GET TRANSCEDENT       //
+//---------------------------//
+
 static Tree_node* get_transc(const char **pointer) {
 
     assert( pointer != nullptr);
@@ -254,6 +274,10 @@ static Tree_node* get_transc(const char **pointer) {
     return node;
 }
 
+//-----------------------------//
+//      GET ADD AND SUB       //
+//---------------------------//
+
 static Tree_node* get_add_and_sub(const char **pointer) {
 
     assert( pointer != nullptr);
@@ -290,6 +314,10 @@ static Tree_node* get_add_and_sub(const char **pointer) {
     return node;
 }
 
+//-----------------------------//
+//      GET MUL AND DIV       //
+//---------------------------//
+
 static Tree_node* get_mul_and_div(const char **pointer) {
 
     assert( pointer != nullptr);
@@ -325,6 +353,10 @@ static Tree_node* get_mul_and_div(const char **pointer) {
 
     return node;
 }
+
+//-----------------------------//
+//         GET DEGREE         //
+//---------------------------//
 
 static Tree_node* get_deg(const char **pointer) {
 
