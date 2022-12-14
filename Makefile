@@ -18,8 +18,8 @@ graphs_clean:
 	find . -name "*.png" -delete
 	find . -name "*.dot" -delete
 
-$(DIFF): obj/diff.o obj/tree.o obj/file_reading.o obj/logging.o obj/main.o obj/descent.o obj/common.o obj/latex.o obj/simpl.o obj/repl.o
-	g++ obj/main.o obj/diff.o obj/tree.o obj/file_reading.o obj/logging.o obj/common.o obj/descent.o obj/latex.o obj/simpl.o obj/repl.o -o $(DIFF) $(CPPFLAGS)
+$(DIFF): obj/diff.o obj/tree.o obj/file_reading.o obj/logging.o obj/main.o obj/descent.o obj/common.o obj/latex.o obj/simpl.o obj/repl.o obj/taylor.o
+	g++ obj/main.o obj/diff.o obj/tree.o obj/file_reading.o obj/logging.o obj/common.o obj/descent.o obj/latex.o obj/simpl.o obj/repl.o obj/taylor.o -o $(DIFF) $(CPPFLAGS)
 
 
 obj/main.o: main.cpp obj/diff.o
@@ -48,6 +48,8 @@ obj/simpl.o: Simplifyer/simpl.cpp Simplifyer/simpl.h
 obj/repl.o:Replace/replacer.cpp Replace/replacer.h
 	g++ -c Replace/replacer.cpp -o obj/repl.o $(CPPFLAGS)
 
+obj/taylor.o: Taylor/taylor.cpp Taylor/taylor.h 
+	g++ -c Taylor/taylor.cpp -o obj/taylor.o $(CPPFLAGS)
 
 obj/file_reading.o: Libs/file_reading.cpp Libs/file_reading.hpp
 	g++ -c Libs/file_reading.cpp -o obj/file_reading.o $(CPPFLAGS)
