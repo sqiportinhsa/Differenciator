@@ -93,6 +93,12 @@ void make_replacings(Tree *orig, Tree *diff) {
     replace_node_everywhere(diff->head->left, nullptr, orig, diff);
 }
 
+void make_replacings(Tree *tree) {
+    calc_weights(tree);
+
+    replace_node_everywhere(tree->head->left, nullptr, tree, nullptr);
+}
+
 //------------------------------------------------------------------------------------------------//
 //                                                                                                //
 //                                   WEIGHT CALCULATION                                           //
@@ -157,7 +163,7 @@ static int replace_node_everywhere(Tree_node *node, Transformations *transfs, Tr
 
     assert(node != nullptr);
 
-    static int variable_counter = 1;
+    static int variable_counter = 0;
 
     if (node->left) {
         replace_node_everywhere(node->left,  transfs, tree1, tree2);
