@@ -50,7 +50,7 @@ static Tree_node* multiply_by_zero          (Transformations *transf, Tree_node 
 			                                       node->right->data.val);
 
 #define REPLACE_VALUE_ON_ARG_TO(arg, value)                                                        \
-    	if (node->left->data.val == arg)                                                           \
+    	if (node->left->type != OP && node->left->data.val == arg)                                 \
 			return replace_value_on_arg_to(transf, node, value);
 
 #define MULTIPLY_BY_ZERO(checking)                                                                 \
@@ -64,16 +64,17 @@ static Tree_node* multiply_by_zero          (Transformations *transf, Tree_node 
 //                                                                                                //
 //------------------------------------------------------------------------------------------------//
 
-#define memory_allocate(ptr, size, type)                                                      \
-        ptr = (type*) calloc(size, sizeof(type));                                             \
-        if (ptr == nullptr) {                                                                 \
-            printf("can't allocate memory: not enought free mem\n");                          \
-            return;                                                                           \
+#define memory_allocate(ptr, size, type)                                                           \
+        ptr = (type*) calloc(size, sizeof(type));                                                  \
+        if (ptr == nullptr) {                                                                      \
+            printf("can't allocate memory: not enought free mem\n");                               \
+            return;                                                                                \
         }
 
 void simplify_tree(Tree *tree) {
 
-    print_to_latex("Добавим следующие замены, \\sout{ведь вы совершенно точно помните старые}:\n\n");
+    print_to_latex("Добавим следующие замены, "
+                   "\\sout{ведь вы совершенно точно помните старые}:\n\n");
 
     int transfs_amount = count_nodes(tree->head);
 
@@ -104,7 +105,7 @@ void simplify_tree(Tree *tree) {
 
 static Tree_node* simplify_subtree(Tree_node *node, Transformations *transf) {
     if (node->type != OP) {
-        print_to_latex("Упрощение для единственной константы не требуется. Продолжим\n\n");
+        print_to_latex("Замена для единственной константы не требуется. Продолжим\n\n");
         return node;
     }
 
@@ -213,8 +214,7 @@ static Tree_node* simplify_deg(Tree_node *node, Transformations *transf) {
     assert(node != nullptr);
     assert(node->data.op == DEG);
 
-    REPLACE_VALUE_ON_ARG_TO(0, 0);
-    REPLACE_VALUE_ON_ARG_TO(1, 1);
+    REPLACE_VALUE_ON_ARG_TO(0, 1);
 
     SKIP_NEUTRAL_ELEMENT(node->right, node->left, 1);
     
