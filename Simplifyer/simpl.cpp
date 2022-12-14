@@ -54,7 +54,7 @@ static Tree_node* multiply_by_zero          (Transformations *transf, Tree_node 
 			return replace_value_on_arg_to(transf, node, value);
 
 #define MULTIPLY_BY_ZERO(checking)                                                                 \
-		if (checking->data.val == 0)                                                               \
+		if (checking->type == VAL && checking->data.val == 0)                                      \
 			return multiply_by_zero(transf, node);
 
 
@@ -73,12 +73,7 @@ static Tree_node* multiply_by_zero          (Transformations *transf, Tree_node 
 
 void simplify_tree(Tree *tree) {
 
-    print_to_latex("\\section{Упрощение полученной формулы}"
-                   "Почему-то все любят, когда просто, и никто не любит, когда сложно. Однако, "
-                   "усложнять внезапно оказывается легко, \\sout{вы можете видеть это на примере "
-                   "моего кода}, а упрощать сложно. Поэтому я сам сделаю это для вас, а вам "
-                   "останется лишь наблюдать за этим прекрасным процессом. Нам понадобится добавить"
-                   " следующие замены, \\sout{ведь вы совершенно точно помните старые}:\n\n");
+    print_to_latex("Добавим следующие замены, \\sout{ведь вы совершенно точно помните старые}:\n\n");
 
     int transfs_amount = count_nodes(tree->head);
 
@@ -97,8 +92,8 @@ void simplify_tree(Tree *tree) {
 
     free_transfs(&transfs, true);
 
-    print_to_latex("Объединяя вышесказанное получим \\sout{неуд за таску} производную в упрощенном "
-                   "виде:\n\n");
+    print_to_latex("Объединяя вышесказанное получим \\sout{неуд за таску} производную "
+                   "в упрощенном виде:\n\n");
 
     latex_print_expr(tree->head->left);
 }
@@ -108,6 +103,11 @@ void simplify_tree(Tree *tree) {
 //---------------------------//
 
 static Tree_node* simplify_subtree(Tree_node *node, Transformations *transf) {
+    if (node->type != OP) {
+        print_to_latex("Упрощение для единственной константы не требуется. Продолжим\n\n");
+        return node;
+    }
+
     if (node->left) {
         if (node->left->type == OP) {
             node->left = simplify_subtree(node->left, transf);

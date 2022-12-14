@@ -8,11 +8,9 @@
 #include "../Tree/tree.h"
 #include "../Rec_desc/descent.h"
 #include "../Sol_generating/latex.h"
-#include "../Replace/replacer.h"
+#include "../Simplifyer/simpl.h"
 
 #include "../DSL.h"
-
-static Tree_node* diff_node(Tree_node *source, Transformations *transf);
 
 static Tree_node* diff_deg(Tree_node *source, Transformations *transf);
 
@@ -39,13 +37,25 @@ static Tree_node* diff_deg(Tree_node *source, Transformations *transf);
             return;                                                                           \
         }
 
-void diff_tree(Tree *source, Tree *dest) {
+void differenciation(Expression *expr) {
+    print_to_latex("\\section{Дифференцирование}\n\n"
+                   "\\subsection{Взятие производной}\n\n");
 
-    print_to_latex("\\section{Дифференцирование}");
+    diff_tree(&expr->origin, &expr->derivative);
+
+    print_to_latex("Вы ещё не утомились? Самое время взять чашечку чая и печеньки, потому что мы "
+                   "переходим к следующему этапу работы с выражением\n\n");
+
+    print_to_latex("\\subsection{Упрощение полученной формулы}\n\n");
+
+    simplify_tree(&expr->derivative);
+}
+
+void diff_tree(Tree *source, Tree *dest) {
 
     int transfs_amount = count_nodes(source->head->left);
 
-    print_to_latex("Для начала проведем следующие замены:\n\n");
+    print_to_latex("Cначала проведем следующие замены:\n\n");
 
     Transformations transfs = {};
     
@@ -64,14 +74,11 @@ void diff_tree(Tree *source, Tree *dest) {
     print_to_latex("Таким образом получаем следующую производную:\n\n");
 
     latex_print_expr(dest->head->left);
-
-    print_to_latex("Вы ещё не утомились? Самое время взять чашечку чая и печеньки, потому что мы "
-                   "переходим к следующему этапу работы с выражением\n\n");
 }
 
 #undef memory_allocate
 
-static Tree_node* diff_node(Tree_node *source, Transformations *transf) {
+Tree_node* diff_node(Tree_node *source, Transformations *transf) {
 
     assert(source != nullptr);
 
@@ -127,7 +134,7 @@ static Tree_node* diff_deg(Tree_node *source, Transformations *transf) {
 
     } else {
         if (source->right->type == VAL) {
-            Ret_dest(Mul(CR, Deg(CL, Sub(CR, Const(1)))));
+            Ret_dest(Mul(Mul(CR, Deg(CL, Sub(CR, Const(1)))), DL));
         } else {
             Ret_dest(Mul(CS, Add(Div(Mul(CR, DL), CL), Mul(DR, Log(CL)))));
         }
