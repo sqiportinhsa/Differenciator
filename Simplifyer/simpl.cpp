@@ -9,17 +9,59 @@
 
 #include "../DSL.h"
 
+//------------------------------------------------------------------------------------------------//
+//                                                                                                //
+//                                    STATIC FUNCTIONS                                            //
+//                                                                                                //
+//------------------------------------------------------------------------------------------------//
 
 static Tree_node* simplify_subtree (Tree_node* node, Transformations *transf);
 
 static Tree_node* simplify_add     (Tree_node *node, Transformations *transf);
-
 static Tree_node* simplify_sub     (Tree_node *node, Transformations *transf);
-
 static Tree_node* simplify_mul     (Tree_node *node, Transformations *transf);
-
 static Tree_node* simplify_deg     (Tree_node *node, Transformations *transf);
 
+static Tree_node* skip_neutral_element      (Transformations *transf, Tree_node *node, 
+                                                                      Tree_node *brother);
+static Tree_node* subtract_from_zero        (Transformations *transf, Tree_node *node);
+static Tree_node* replace_two_values        (Transformations *transf, Tree_node *node, int new_val);
+static Tree_node* replace_value_on_arg_to   (Transformations *transf, Tree_node *node, int value);
+static Tree_node* multiply_by_zero          (Transformations *transf, Tree_node *node);
+
+//------------------------------------------------------------------------------------------------//
+//                                                                                                //
+//                                  SIMPLIFYING MACRO                                             //
+//                                                                                                //
+//------------------------------------------------------------------------------------------------//
+
+#define SKIP_NEUTRAL_ELEMENT(checking, brother, elem)                              		           \
+        if (checking->type == VAL && checking->data.val == elem)                   	               \
+			return skip_neutral_element(transf, node, brother);                                    
+
+#define SUBTRACT_FROM_ZERO()                                                                       \
+		if (node->left->type == VAL && node->left->data.val == 0)                   	           \
+			return subtract_from_zero(transf, node);
+
+#define REPLACE_TWO_VALUES(op_code, oper)                                                          \
+        if (node->left->type == VAL && node->right->type == VAL && node->data.op == op_code)       \
+        	return replace_two_values(transf, node, node->left->data.val oper                      \
+			                                       node->right->data.val);
+
+#define REPLACE_VALUE_ON_ARG_TO(arg, value)                                                        \
+    	if (node->left->data.val == arg)                                                           \
+			return replace_value_on_arg_to(transf, node, value);
+
+#define MULTIPLY_BY_ZERO(checking)                                                                 \
+		if (checking->data.val == 0)                                                               \
+			return multiply_by_zero(transf, node);
+
+
+//------------------------------------------------------------------------------------------------//
+//                                                                                                //
+//                                SIMPLIFYING TREE & SUBTREE                                      //
+//                                                                                                //
+//------------------------------------------------------------------------------------------------//
 
 #define memory_allocate(ptr, size, type)                                                      \
         ptr = (type*) calloc(size, sizeof(type));                                             \
@@ -104,6 +146,12 @@ static Tree_node* simplify_subtree(Tree_node* node, Transformations *transf) {
     return node;
 }
 
+//------------------------------------------------------------------------------------------------//
+//                                                                                                //
+//                                     SIMPLIFYING NODES                                          //
+//                                                                                                //
+//------------------------------------------------------------------------------------------------//
+
 static Tree_node* simplify_add(Tree_node *node, Transformations *transf) {
 
     assert(node != nullptr);
@@ -158,4 +206,56 @@ static Tree_node* simplify_deg(Tree_node *node, Transformations *transf) {
     SKIP_NEUTRAL_ELEMENT(node->right, node->left, 1);
     
     return node;
+}
+
+//------------------------------------------------------------------------------------------------//
+//                                                                                                //
+//                                     SIMPLIFYING CASES                                          //
+//                                                                                                //
+//------------------------------------------------------------------------------------------------//
+
+static Tree_node* skip_neutral_element(Transformations *transf, Tree_node *node, 
+                                                                Tree_node *brother) {
+	Tree_node *simplifyed = copy_subtree(brother);                                         
+																					 	           
+	save_transf(copy_subtree(node), copy_subtree(simplifyed), transf);                     
+	free_node(node);                                                                       
+																						           
+	return simplifyed;
+}
+
+static Tree_node* subtract_from_zero(Transformations *transf, Tree_node *node) {
+	Tree_node *simplifyed = create_node(MUL, copy_subtree(node->right), Const(-1));        
+																			 	           
+	save_transf(copy_subtree(node), copy_subtree(simplifyed), transf);                     
+	free_node(node);                                                                       
+																				           
+	return simplifyed;
+}
+
+static Tree_node* replace_two_values(Transformations *transf, Tree_node *node, int new_val) {
+	Tree_node *new_node = Const(new_val);
+	
+	save_transf(copy_subtree(node), copy_subtree(new_node), transf);             
+	free_node(node);
+
+	return new_node; 
+}
+
+static Tree_node* replace_value_on_arg_to(Transformations *transf, Tree_node *node, int value) {
+	Tree_node *new_node = Const(value);
+
+	save_transf(copy_subtree(node), copy_subtree(new_node), transf);                       
+	free_node(node);      
+
+    return new_node;                                                                                                                                               
+}
+
+static Tree_node* multiply_by_zero(Transformations *transf, Tree_node *node) {
+	Tree_node *new_node = Const(0);         
+
+	save_transf(copy_subtree(node), copy_subtree(new_node), transf);
+	free_node(node);                   
+
+    return new_node;
 }
