@@ -124,7 +124,7 @@ static Tree_node* simplify_sub(Tree_node *node, Transformations *transf) {
 
     SKIP_NEUTRAL_ELEMENT(node->right, node->left,  0);
 
-    REPLACE_TWO_VALUES(SUB, +);
+    REPLACE_TWO_VALUES(SUB, -);
 
     SUBTRACT_FROM_ZERO();
 
