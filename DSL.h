@@ -25,7 +25,8 @@
 //------------------------------------------------------------------------------------------------//
 
 
-#define Const(c) create_node(c)
+#define Const(c)    create_node(c)
+#define Variable(c) create_node(c)
 
 #define Add(l, r) create_node(ADD, l, r)
 #define Sub(l, r) create_node(SUB, l, r)
