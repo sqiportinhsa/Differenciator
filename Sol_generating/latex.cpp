@@ -29,6 +29,7 @@ static void latex_print_mul          (const Tree_node *node);
 static void latex_print_deg          (const Tree_node *node);
 
 static bool priority_lower_than_mul  (const Tree_node *node);
+static bool priority_lower_than_deg  (const Tree_node *node);
 
 
 //------------------------------------------------------------------------------------------------//
@@ -378,15 +379,15 @@ static void latex_print_div(const Tree_node *node) {
 //      MULTIPLICATION        //
 //---------------------------//
 
-#define PRINT_NODE_WITH_BRACKETS(node)               \
-        if (priority_lower_than_mul(node)) {         \
-        print_to_latex("(");                         \
-        latex_print_node(node);                      \
-        print_to_latex(")");                         \
-                                                     \
-    } else {                                         \
-        latex_print_node(node);                      \
-    }
+#define PRINT_NODE_WITH_BRACKETS(node)                   \
+        if (priority_lower_than_mul(node)) {             \
+            print_to_latex("(");                         \
+            latex_print_node(node);                      \
+            print_to_latex(")");                         \
+                                                         \
+        } else {                                         \
+            latex_print_node(node);                      \
+        }
 
 static void latex_print_mul(const Tree_node *node) {
 
@@ -426,14 +427,45 @@ static bool priority_lower_than_mul(const Tree_node *node) {
 //           DEGREE           //
 //---------------------------//
 
+#define PRINT_NODE_WITH_BRACKETS(node)                   \
+        if (priority_lower_than_deg(node)) {             \
+            print_to_latex("(");                         \
+            latex_print_node(node);                      \
+            print_to_latex(")");                         \
+                                                         \
+        } else {                                         \
+            latex_print_node(node);                      \
+        }
+
 static void latex_print_deg(const Tree_node *node) {
 
     assert(node != nullptr);
     assert(node->data.op == DEG);
 
     print_to_latex("{");
-    latex_print_node(node->left);
+    PRINT_NODE_WITH_BRACKETS(node->left);
     print_to_latex("}^{");
-    latex_print_node(node->right);
+    PRINT_NODE_WITH_BRACKETS(node->right);
     print_to_latex("}");
 }
+
+//---------------------------//
+
+static bool priority_lower_than_deg(const Tree_node *node) {
+
+    assert(node != nullptr);
+
+    if (node->type != OP) {
+
+        return false;
+    }
+
+    if (node->data.op == ADD || node->data.op == SUB) {
+
+        return true;
+    }
+
+    return false;
+}
+
+#undef PRINT_NODE_WITH_BRACKETS
