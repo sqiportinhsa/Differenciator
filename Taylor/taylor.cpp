@@ -50,7 +50,7 @@ static void calc_derivative(Tree *prev_der, Tree *taylor, int i) {
 
     simplify_tree(&next_der);
 
-    taylor->head->left = Add(taylor->head->left, Mul(Div(copy_subtree(next_der.head->left), Const(factorial(i))), Sub(Variable('y'), Variable('x'))));
+    taylor->head->left = Add(taylor->head->left, Mul(Div(copy_subtree(next_der.head->left), Const(factorial(i))), Deg(Sub(Variable('y'), Variable('x')), Const(i))));
 
     free_node(prev_der->head->left);
     prev_der->head->left = copy_subtree(next_der.head->left);
