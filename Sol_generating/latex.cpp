@@ -238,7 +238,7 @@ void latex_print_replacing(const Tree_node *node, int number) {
 
 static void latex_print_rep_var(int number) {
 
-    char letter = 'a' + number % ('w' - 'a' + 1) - 1;
+    char letter = 'a' + number % ('w' - 'a' + 1);
 
     int  letter_num = number / ('w' - 'a' + 1);
 
