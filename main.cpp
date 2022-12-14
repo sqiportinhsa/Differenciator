@@ -7,6 +7,7 @@
 #include "Diff/diff.h"
 #include "Sol_generating/latex.h"
 #include "Simplifyer/simpl.h"
+#include "Taylor/taylor.h"
 
 int main(int argc, const char **argv) {
 
@@ -22,9 +23,8 @@ int main(int argc, const char **argv) {
 
     print_introduction(&expr.origin);
 
-    diff_tree(&expr.origin, &expr.first_deg);
-
-    simplify_tree(&expr.first_deg);
+    differenciation (&expr);
+    taylor          (&expr);
 
     close_latex();
 
