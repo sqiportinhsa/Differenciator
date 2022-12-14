@@ -6,10 +6,9 @@
 #include "../Sol_generating/latex.h"
 
 const int Var_weight = 1;
-const int Max_weight = 30;
+const int Max_weight = 45;
 
 const int To_be_replaced = -1;
-
 
 
 static size_t calc_subtree_weight(Tree_node *head);
