@@ -62,6 +62,7 @@ void expr_dtor(Expression *expr) {
 
     tree_dtor(&expr->origin);
     tree_dtor(&expr->derivative);
+    tree_dtor(&expr->taylor);
 }
 
 bool is_commutative(Operations op) {
