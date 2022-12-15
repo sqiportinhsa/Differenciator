@@ -27,18 +27,14 @@ bool init_expression(Expression *expr, const char *input) {
 
     init_tree(&expr->origin);
     init_tree(&expr->derivative);
+    init_tree(&expr->taylor);
 
-    expr->origin.head = create_orphan_node(); //fictive head element without data
+    expr->origin.head = descent(expr->text_origin);
 
-    expr->origin.head->left = descent(expr->text_origin); //first tree element
-
-    if (expr->origin.head->left == nullptr) {
+    if (expr->origin.head == nullptr) {
 
         return false;
     }
-
-    expr->derivative.head = create_orphan_node();
-    expr->taylor.head     = create_orphan_node();
 
     return true;
 }

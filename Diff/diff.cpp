@@ -53,7 +53,7 @@ void differenciation(Expression *expr) {
 
 void diff_tree(Tree *source, Tree *dest) {
 
-    int transfs_amount = count_nodes(source->head->left);
+    int transfs_amount = count_nodes(source->head);
 
     print_to_latex("Cначала проведем следующие замены:\n\n");
 
@@ -62,7 +62,7 @@ void diff_tree(Tree *source, Tree *dest) {
     memory_allocate(transfs.orig, transfs_amount, Tree_node*);
     memory_allocate(transfs.diff, transfs_amount, Tree_node*);
 
-    dest->head->left = diff_node(source->head->left, &transfs);
+    dest->head = diff_node(source->head, &transfs);
     make_replacings(source, dest);
 
     print_to_latex("После чего мы готовы приступить непосредственно к дифференцированию:\n\n");
@@ -73,7 +73,7 @@ void diff_tree(Tree *source, Tree *dest) {
 
     print_to_latex("Таким образом получаем следующую производную:\n\n");
 
-    latex_print_expr(dest->head->left);
+    latex_print_expr(dest->head);
 }
 
 #undef memory_allocate

@@ -19,7 +19,7 @@ void taylor(Expression *expr) {
                    "Сначала нам потребуется вычислить оставшиеся производные вплоть до %d-го "
                    "порядка.\n\n", num_of_derivatives);
 
-    expr->taylor.head->left = Add(copy_subtree(expr->origin.head->left), Mul(Div(copy_subtree(expr->derivative.head->left), Const(1)), Sub(Variable('y'), Variable('x'))));
+    expr->taylor.head = Add(copy_subtree(expr->origin.head), Mul(Div(copy_subtree(expr->derivative.head), Const(1)), Sub(Variable('y'), Variable('x'))));
 
     for (int i = 2; i <= num_of_derivatives; ++i) {
         calc_derivative(&expr->derivative, &expr->taylor, i);
@@ -32,7 +32,7 @@ void taylor(Expression *expr) {
 
     print_to_latex("Таким образом получается следующее разложение в точке y вблизи x:");
 
-    latex_print_expr(expr->taylor.head->left);
+    latex_print_expr(expr->taylor.head);
 }
 
 static void calc_derivative(Tree *prev_der, Tree *taylor, int i) {
@@ -42,7 +42,6 @@ static void calc_derivative(Tree *prev_der, Tree *taylor, int i) {
 
     Tree next_der = {};
     init_tree(&next_der);
-    next_der.head = create_orphan_node();
 
     diff_tree(prev_der, &next_der);
 
@@ -50,10 +49,10 @@ static void calc_derivative(Tree *prev_der, Tree *taylor, int i) {
 
     simplify_tree(&next_der);
 
-    taylor->head->left = Add(taylor->head->left, Mul(Div(copy_subtree(next_der.head->left), Const(factorial(i))), Deg(Sub(Variable('y'), Variable('x')), Const(i))));
+    taylor->head = Add(taylor->head, Mul(Div(copy_subtree(next_der.head), Const(factorial(i))), Deg(Sub(Variable('y'), Variable('x')), Const(i))));
 
-    free_node(prev_der->head->left);
-    prev_der->head->left = copy_subtree(next_der.head->left);
+    free_node(prev_der->head);
+    prev_der->head = copy_subtree(next_der.head);
 
     tree_dtor(&next_der);
 }

@@ -83,8 +83,8 @@ void simplify_tree(Tree *tree) {
     memory_allocate(transfs.orig, transfs_amount, Tree_node*);
     memory_allocate(transfs.diff, transfs_amount, Tree_node*);
 
-    tree->head->left = simplify_subtree(tree->head->left, &transfs);
-    set_as_parent(tree->head->left);
+    tree->head = simplify_subtree(tree->head, &transfs);
+    set_as_parent(tree->head);
 
     make_replacings(tree, &transfs);
 
@@ -96,7 +96,7 @@ void simplify_tree(Tree *tree) {
     print_to_latex("Объединяя вышесказанное получим \\sout{неуд за таску} производную "
                    "в упрощенном виде:\n\n");
 
-    latex_print_expr(tree->head->left);
+    latex_print_expr(tree->head);
 }
 
 #undef memory_allocate
