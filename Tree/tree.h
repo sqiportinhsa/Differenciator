@@ -4,15 +4,6 @@
 #include "../Libs/logging.h"
 
 
-static const char *FILL__COLOR = "#9AA5BB";
-static const char *FRAME_COLOR = "#232D42";
-static const char *ARROW_COLOR = "#54303c";
-
-static const char *Data_is_val = "value";
-static const char *Data_is_var = "variable";
-static const char *Data_is_op  = "operator";
-
-
 enum Tree_err {
     NO_TREE_ERR = 0,
     NOT_ENOUGHT_MEM = 1,
@@ -114,8 +105,6 @@ void real_dump_subtree(const Tree_node *head, const char *file, const char *func
 
 
 void generate_graph_picture(const Tree *tree, char *picture_name);
-
-void text_database_dump(Tree *tree, FILE *output);
 
 void generate_file_name(char *filename, const char *extension);
 
