@@ -6,7 +6,7 @@
 #include "../Sol_generating/latex.h"
 
 const int Var_weight = 10;
-const int Max_weight = 200;
+const int Max_weight = 175;
 
 const int To_be_replaced = -1;
 
