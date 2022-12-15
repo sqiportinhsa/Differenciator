@@ -132,7 +132,7 @@ void print_introduction(Tree *tree) {
                    "объяснить решение с первых дней жизни, в чем вам предстоит убедиться при "
                    "прочтении этого файла. На повестке дня следующее выражение:\n\n");
 
-    latex_print_expr(tree->head->left);
+    latex_print_expr(tree->head);
 }
 
 //------------------------------------------------------------------------------------------------//
@@ -460,7 +460,11 @@ static bool priority_lower_than_deg(const Tree_node *node) {
         return false;
     }
 
-    if (node->data.op == ADD || node->data.op == SUB) {
+    if (node->data.op == ADD || 
+        node->data.op == SUB ||
+        node->data.op == MUL ||
+        node->data.op == DIV ||
+        node->data.op == DEG) {
 
         return true;
     }
