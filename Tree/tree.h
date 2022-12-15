@@ -26,17 +26,17 @@ enum Node_type {
 };
 
 enum Operations {
-    ADD,
-    SUB,
-    MUL,
-    DIV,
-    DEG,
-    COS,
-    SIN,
-    TAN,
-    CTG,
-    LOG,
-    EXP,
+    DEG = 5,
+    ADD = 10,
+    SUB = 11,
+    MUL = 12,
+    DIV = 13,
+    COS = 30,
+    SIN = 31,
+    TAN = 32,
+    CTG = 33,
+    LOG = 34,
+    EXP = 35,
 };
 
 struct Tree_node {

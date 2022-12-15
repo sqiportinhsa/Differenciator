@@ -5,8 +5,8 @@
 #include "../common.h"
 #include "../Sol_generating/latex.h"
 
-const int Var_weight = 1;
-const int Max_weight = 45;
+const int Var_weight = 10;
+const int Max_weight = 200;
 
 const int To_be_replaced = -1;
 
@@ -80,7 +80,7 @@ void make_replacings(Tree *tree, Transformations *transfs) {
     calc_weights(tree);
     calc_weights(transfs);
 
-    replace_node_everywhere (tree->head->left, transfs, tree, nullptr);
+    replace_node_everywhere (tree->head, transfs, tree, nullptr);
     replace_nodes_in_transfs(tree, transfs);
 }
 
@@ -89,14 +89,14 @@ void make_replacings(Tree *orig, Tree *diff) {
     calc_weights(orig);
     calc_weights(diff);
 
-    replace_node_everywhere(orig->head->left, nullptr, orig, diff);
-    replace_node_everywhere(diff->head->left, nullptr, orig, diff);
+    replace_node_everywhere(orig->head, nullptr, orig, diff);
+    replace_node_everywhere(diff->head, nullptr, orig, diff);
 }
 
 void make_replacings(Tree *tree) {
     calc_weights(tree);
 
-    replace_node_everywhere(tree->head->left, nullptr, tree, nullptr);
+    replace_node_everywhere(tree->head, nullptr, tree, nullptr);
 }
 
 //------------------------------------------------------------------------------------------------//
@@ -149,7 +149,7 @@ static void calc_weights(Transformations *tranfs) {
 
 static void calc_weights(Tree *tree) {
 
-    calc_subtree_weight(tree->head->left);
+    calc_subtree_weight(tree->head);
 }
 
 //------------------------------------------------------------------------------------------------//
@@ -180,9 +180,9 @@ static int replace_node_everywhere(Tree_node *node, Transformations *transfs, Tr
 
         latex_print_replacing(node, node->replace);
 
-        DO_IF(replace_same_as_in(node, tree1->head->left), tree1   != nullptr);
-        DO_IF(replace_same_as_in(node, tree2->head->left), tree2   != nullptr);
-        DO_IF(replace_same_as_in(node, transfs),           transfs != nullptr);
+        DO_IF(replace_same_as_in(node, tree1->head), tree1   != nullptr);
+        DO_IF(replace_same_as_in(node, tree2->head), tree2   != nullptr);
+        DO_IF(replace_same_as_in(node, transfs),     transfs != nullptr);
     }
 
     return variable_counter;
