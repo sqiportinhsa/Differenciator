@@ -15,8 +15,6 @@
 static Tree_node* diff_deg(Tree_node *source, Transformations *transf);
 
 
-//#define DEBUG
-
 #ifdef DEBUG
 
 #define DEBUG_PRINT(str, ...) {\
@@ -25,7 +23,7 @@ static Tree_node* diff_deg(Tree_node *source, Transformations *transf);
 
 #else 
 
-#define DEBUG_PRINT ;
+#define DEBUG_PRINT(str, ...) ;
 
 #endif
 
