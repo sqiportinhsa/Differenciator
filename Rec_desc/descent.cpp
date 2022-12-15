@@ -55,6 +55,8 @@ static Tree_node* get_deg           (const char **pointer);
 //                                                                                                //
 //------------------------------------------------------------------------------------------------//
 
+#define DEBUG
+
 #ifdef DEBUG
 
 #define DEBUG_PRINT(str, ...) {\
@@ -75,15 +77,18 @@ static Tree_node* get_deg           (const char **pointer);
 //------------------------------------------------------------------------------------------------//
 
 
-#define WARNING(checkup, message, ...)                     \
+#define CHECK(checkup, message, ...)                       \
         if (!(checkup)) {                                  \
             printf("Error: " message, ##__VA_ARGS__);      \
+            free_node(node);                               \
             return nullptr;                                \
         }
 
 #define RETURN_NULLPTR_IF(condition) \
-        if (condition)               \
-            return nullptr;
+        if (condition) {             \
+            free_node(node);         \
+            return nullptr;          \
+        }
 
 
 Tree_node* descent(const char *pointer) {
@@ -92,11 +97,11 @@ Tree_node* descent(const char *pointer) {
 
     DEBUG_PRINT("start\n");
 
-    Tree_node *head = get_add_and_sub(&pointer);
+    Tree_node *node = get_add_and_sub(&pointer);
 
-    WARNING(*pointer == '\0', "unexpected symbol: <%c>\n", *pointer);
+    CHECK(*pointer == '\0', "unexpected symbol: <%c>\n", *pointer);
 
-    return head;
+    return node;
 }
 
 //------------------------------------------------------------------------------------------------//
@@ -125,7 +130,7 @@ static Tree_node* get_argument(const char **pointer) {
     TRY_TO_GET_WITH(get_value   (pointer));
     TRY_TO_GET_WITH(get_variable(pointer));
 
-    WARNING(true, "invalid syntax. Value or variable expected, got <%c>", *pointer);
+    CHECK(false, "invalid syntax. Value or variable expected, got <%c>", *pointer);
 
     return nullptr;
 }
@@ -200,7 +205,8 @@ static Tree_node* get_primary_expression(const char **pointer) {
 
         node = get_add_and_sub(pointer);
 
-        WARNING(**pointer == ')', "close bracket ')' expected\n");
+        RETURN_NULLPTR_IF(node == nullptr);
+        CHECK(**pointer == ')', "close bracket ')' expected\n");
 
         ++(*pointer);
 
@@ -259,7 +265,7 @@ static Tree_node* get_transc(const char **pointer) {
         return get_primary_expression(pointer);
     }
 
-    RETURN_NULLPTR_IF(**pointer != '(');
+    CHECK(**pointer == '(', "open bracket '(' expected\n");
 
     ++(*pointer);
     
@@ -267,7 +273,7 @@ static Tree_node* get_transc(const char **pointer) {
 
     set_as_parent(node);
 
-    RETURN_NULLPTR_IF(**pointer != ')');
+    CHECK(**pointer == ')', "close bracket ')' expected\n");
 
     ++(*pointer);
 
@@ -297,7 +303,7 @@ static Tree_node* get_add_and_sub(const char **pointer) {
 
         Operations op = ADD;
 
-        if (**pointer == '+') {       //get type of operation
+        if (**pointer == '+') { //get type of operation
             op = ADD;
         } else {
             op = SUB;
@@ -337,7 +343,7 @@ static Tree_node* get_mul_and_div(const char **pointer) {
 
         Operations op = MUL;
 
-        if (**pointer == '*') {       //get type of operation
+        if (**pointer == '*') { //get type of operation
             op = MUL;
         } else {
             op = DIV;
