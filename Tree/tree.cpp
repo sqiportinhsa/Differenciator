@@ -10,12 +10,17 @@
 static void generate_node_code(const Tree_node *node, FILE *code_output);
 
 
-static void text_dump_node(Tree_node *node, FILE *output);
-
-
 static const int max_file_with_graphviz_code_name_len = 30;
-static const int max_generation_png_command_len = 200;
-static const int max_png_file_name_len = 30;
+static const int max_generation_png_command_len       = 200;
+static const int max_png_file_name_len                = 30;
+
+static const char *FILL__COLOR = "#9AA5BB";
+static const char *FRAME_COLOR = "#232D42";
+static const char *ARROW_COLOR = "#54303c";
+
+static const char *Data_is_val = "value";
+static const char *Data_is_var = "variable";
+static const char *Data_is_op  = "operator";
 
 
 //----------------------------- INITIALISATION SECTION -------------------------------------------//
@@ -227,7 +232,7 @@ void free_node(Tree_node *node) {
 
 #else 
 
-#define DEBUG_PRINT ;
+#define DEBUG_PRINT(str, ...) ;
 
 #endif
 
@@ -373,28 +378,6 @@ void generate_graph_picture(const Tree *tree, char *picture_name) {
     sprintf(command, "dot %s -o %s -T png", code_filename, picture_name);
 
     system(command);
-}
-
-void text_database_dump(Tree *tree, FILE *output) {
-    assert(tree   != nullptr);
-    assert(output != nullptr);
-
-    text_dump_node(tree->head, output);
-}
-
-static void text_dump_node(Tree_node *node, FILE *output) {
-    assert(node   != nullptr);
-    assert(output != nullptr);
-
-    fprintf(output, "{ \"%c\"", node->data);
-
-    if (node->left != nullptr && node->right != nullptr) {
-        fprintf(output, "\n");
-        text_dump_node(node->left,  output);
-        text_dump_node(node->right, output);
-    }
-
-    fprintf(output, " }\n");
 }
 
 static void generate_node_code(const Tree_node *node, FILE *code_output) {
