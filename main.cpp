@@ -33,7 +33,5 @@ int main(int argc, const char **argv) {
 
     expr_dtor(&expr);
 
-    system("pdflatex latex_output.tex");
-
     return 0;
 }
