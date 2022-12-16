@@ -35,7 +35,7 @@ obj/diff.o: Diff/diff.cpp Diff/diff.h Tree/tree.cpp Tree/tree.h
 obj/tree.o: Tree/tree.cpp Tree/tree.h
 	g++ -c Tree/tree.cpp -o obj/tree.o $(CPPFLAGS)
 
-obj/latex.o: Sol_generating/latex.cpp Sol_generating/latex.h 
+obj/latex.o: Sol_generating/latex.cpp Sol_generating/latex.h phrases.h
 	g++ -c Sol_generating/latex.cpp -o obj/latex.o $(CPPFLAGS)
 
 
