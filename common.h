@@ -5,7 +5,7 @@
 #include "Libs/file_reading.hpp"
 
 static const char *default_input  = "example.txt";
-static const char *default_output = "GDZ_matematica_5_class.pdf";
+static const char *default_output = "GDZ_matematica_5_class.tex";
 
 struct Expression {
     Tree  origin          = {};
