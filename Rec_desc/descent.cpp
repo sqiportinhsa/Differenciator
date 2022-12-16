@@ -55,8 +55,6 @@ static Tree_node* get_deg           (const char **pointer);
 //                                                                                                //
 //------------------------------------------------------------------------------------------------//
 
-#define DEBUG
-
 #ifdef DEBUG
 
 #define DEBUG_PRINT(str, ...) {\
