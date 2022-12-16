@@ -70,7 +70,7 @@ void latex_print_phrase() {
 
 void init_latex(const char *filename) {
 
-    FILE *output = fopen(latex_filename, "w");
+    FILE *output = fopen(default_output, "w");
 
     set_tex_output(output);
 
@@ -102,6 +102,12 @@ void close_latex() {
                    "\\end{document}");
 
     fclose(get_output_stream());
+
+    if (!system("pdflatex GDZ_matematica_5_class >tex_logs.txt")) {
+        printf("all done\n");
+    } else {
+        printf("error occured, check tex_logs.txt\n");
+    }
 }
 
 static void print_head() {
